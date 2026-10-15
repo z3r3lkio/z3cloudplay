@@ -7,7 +7,7 @@ set(Z3CLOUDPLAY_PS5_TITLE_ID "" CACHE STRING "Explicit PS5 title id (required fo
 
 file(READ "${CMAKE_SOURCE_DIR}/dependencies.lock.json" z3cloudplay_dependency_lock)
 include(CTest)
-include(cmake/Z3CloudPlayCore.cmake)
+include(cmake/PlaydenCore.cmake)
 include(cmake/SteamBackend.cmake)
 z3cloudplay_register_steam_backend_tests()
 include(cmake/ProsperoRuntime.cmake)
