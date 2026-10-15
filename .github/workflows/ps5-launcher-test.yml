@@ -19,6 +19,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+      - name: Validate pinned submodules
+        run: |
+          git submodule status
+          test -f third_party/ps5-homebrew-ui/tools/font-baker/bake_font.cpp
       - name: Install native build prerequisites
         run: |
           sudo apt-get update
