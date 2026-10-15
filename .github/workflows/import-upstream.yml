@@ -1,6 +1,9 @@
 name: Import upstream source
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/import-upstream.yml']
 permissions:
   contents: write
 jobs:
