@@ -2384,7 +2384,9 @@ void Simulation::rebuild_view() {
 
     if (state_.editor.active) {
         view_.title = state_.editor.purpose;
-        view_.subtitle = state_.editor.value;
+        view_.subtitle = state_.editor.purpose == "Secure Session Passphrase"
+            ? std::string(std::min<std::size_t>(state_.editor.value.size(), 64), '*')
+            : state_.editor.value;
         if (state_.editor.purpose == "Search") view_.subtitle += " · " + std::to_string(visible_games().size()) + " results";
         row("keyboard-done", RowKind::Action, "Done", "editor-done");
         row("keyboard-cancel", RowKind::Action, "Cancel", "editor-cancel");
