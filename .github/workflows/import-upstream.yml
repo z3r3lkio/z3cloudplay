@@ -1,0 +1,26 @@
+name: Import upstream source
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    if: github.repository == 'z3r3lkio/z3cloudplay'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Retrieve verified upstream revision
+        run: |
+          git clone https://github.com/leolobato/playden-ps5.git /tmp/z3cloudplay-upstream
+          git -C /tmp/z3cloudplay-upstream checkout --detach 2b2977a5a526b154b0609fcdffd1961c67acd037
+      - name: Import source and branding
+        run: python3 tools/import_upstream.py /tmp/z3cloudplay-upstream .
+      - name: Preserve importer and workflow, commit source
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --quiet || git commit -m "Import PlayDen source and rebrand z3cloudplay"
+          git push origin HEAD:main
