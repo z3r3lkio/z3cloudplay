@@ -9,6 +9,8 @@ on:
       - 'tests/secure_session_vault_test.cpp'
       - 'src/steam/ephemeral_session_repository.h'
       - 'src/homebrew/ps5.cpp'
+      - 'src/homebrew/view.cpp'
+      - 'src/homebrew/simulation.cpp'
       - '.github/workflows/secure-vault-tests.yml'
   workflow_dispatch:
 permissions:
@@ -37,5 +39,16 @@ jobs:
       - name: Check PS5 credential policy
         run: |
           python3 -c 'from pathlib import Path; s=Path("src/homebrew/ps5.cpp").read_text(); assert "EphemeralSessionRepository sessions;" in s; assert "LocalSessionRepository sessions(" not in s; assert "credential_cleanup.Remove(" in s'
+      - name: Guard passphrase UI rendering
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          view=Path('src/homebrew/view.cpp').read_text()
+          model=Path('src/homebrew/simulation.cpp').read_text()
+          assert 'secret_entry = state.editor.purpose == "Secure Session Passphrase"' in view
+          assert 'painter.field(field, display_value, false' in view
+          assert 'view_.subtitle = state_.editor.purpose == "Secure Session Passphrase"' in model
+          print("Passphrase masking checks passed")
+          PY
       - name: Run vault security tests
         run: /tmp/z3cloudplay-secure-vault-test
