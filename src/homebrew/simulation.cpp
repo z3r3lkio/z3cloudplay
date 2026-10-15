@@ -3652,8 +3652,8 @@ void Simulation::cancel() {
     }
     if (state_.editor.active) {
         if (state_.editor.purpose == "Secure Session Passphrase") {
-            std::fill(state_.editor.value.begin(), state_.editor.value.end(), '\\0');
-            std::fill(state_.editor.original.begin(), state_.editor.original.end(), '\\0');
+            std::fill(state_.editor.value.begin(), state_.editor.value.end(), '\0');
+            std::fill(state_.editor.original.begin(), state_.editor.original.end(), '\0');
             state_.editor.value.clear();
             state_.editor.original.clear();
             completed_secure_passphrase_.reset();
