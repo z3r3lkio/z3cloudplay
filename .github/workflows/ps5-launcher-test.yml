@@ -9,6 +9,8 @@ on:
       - 'CMakeLists.txt'
       - 'cmake/PackagePS5.cmake'
       - 'src/homebrew/ps5.cpp'
+      - 'src/homebrew/controller.cpp'
+      - 'src/homebrew/controller.hpp'
       - 'scripts/build-homebrew-ps5.sh'
       - '.github/workflows/ps5-launcher-test.yml'
 permissions:
