@@ -80,6 +80,11 @@ void Controller::Reauthenticate() {
   request_ = service_->BeginQrSignIn();
   Update(AuthState::Waiting);
 }
+void Controller::RestoreAfterUnlock() {
+  if (!service_) return;
+  // Existing SteamService worker serializes replacement/cancel requests.
+  Restore();
+}
 void Controller::Restore() {
   if(library_) library_->Reset();
   phase_=Phase::Restore;request_=service_->RestoreSession();
