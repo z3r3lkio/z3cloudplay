@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 
 namespace fs = std::filesystem;
@@ -60,7 +60,7 @@ bool IsRegular(const fs::path& path) {
 
 // Writes bytes to path through a temporary file in the same folder, synced, then renamed.
 bool WriteAtomic(const fs::path& path, std::string_view bytes, mode_t mode = 0644) {
-  const auto temporary = path.parent_path() / (".playden-" + path.filename().string() + ".tmp");
+  const auto temporary = path.parent_path() / (".z3cloudplay-" + path.filename().string() + ".tmp");
   ::unlink(temporary.c_str());
   const int file = ::open(temporary.c_str(), O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, mode);
   if (file < 0) return false;
@@ -147,7 +147,7 @@ bool WriteSettings(const fs::path& folder, const SteamworksIdentity& identity, c
   account.erase(std::remove_if(account.begin(), account.end(), [](char c) {
     return static_cast<unsigned char>(c) < 0x20 || c == '=' || c == '[' || c == ']';
   }), account.end());
-  if (account.empty()) account = "Playden";
+  if (account.empty()) account = "Z3CloudPlay";
   const std::string user = "[user::general]\naccount_name=" + account + "\naccount_steamid=" +
                            std::to_string(identity.steam_id) + "\nlanguage=" + identity.language +
                            "\n\n[user::saves]\nlocal_save_path=" + kSteamworksSavePath + "\n";
@@ -173,8 +173,8 @@ struct Emulator {
   std::string sha256;
 };
 
-// Playden's emulator, the current build or a retired one.
-bool IsPlaydenEmulator(const std::string& digest, const std::vector<std::string>& retired) {
+// Z3CloudPlay's emulator, the current build or a retired one.
+bool IsZ3CloudPlayEmulator(const std::string& digest, const std::vector<std::string>& retired) {
   return digest == kSteamApi32Sha256 || digest == kSteamApi64Sha256 ||
          std::find(retired.begin(), retired.end(), digest) != retired.end();
 }
@@ -257,23 +257,23 @@ SteamworksResult EmulateSteamworks(const std::string& install_root, const std::s
     const auto orig = fs::path(path.string() + ".orig");
     const bool pe64 = Lower(path.filename().string()) == "steam_api64.dll";
     const auto emulator = LoadEmulator(emulator_dir, pe64);
-    if (!emulator) return fail("Playden's Steam emulator files are missing or damaged; reinstall Playden.");
+    if (!emulator) return fail("Z3CloudPlay's Steam emulator files are missing or damaged; reinstall Z3CloudPlay.");
     const auto current = ReadFile(path, kMaxDllBytes);
-    if (!current) return fail("Playden could not read the game's " + relative + ".");
+    if (!current) return fail("Z3CloudPlay could not read the game's " + relative + ".");
     const auto digest = HashArtifactBytes(*current);
-    if (!digest) return fail("Playden could not check the game's " + relative + ".");
+    if (!digest) return fail("Z3CloudPlay could not check the game's " + relative + ".");
     std::string original;
-    if (IsPlaydenEmulator(*digest, retired)) {
-      // Playden's own (an earlier build after a Playden update): the game's DLL is the .orig.
+    if (IsZ3CloudPlayEmulator(*digest, retired)) {
+      // Z3CloudPlay's own (an earlier build after a Z3CloudPlay update): the game's DLL is the .orig.
       const auto kept = IsRegular(orig) ? ReadFile(orig, kMaxDllBytes) : std::nullopt;
       if (!kept) return fail("The game's original " + relative + " is missing; verify the download.");
-      // An earlier Playden kept its own emulator as the original. The game's interface versions
+      // An earlier Z3CloudPlay kept its own emulator as the original. The game's interface versions
       // are lost with it, and the emulator would hand the game the wrong ones.
       const auto kept_digest = HashArtifactBytes(*kept);
-      if (!kept_digest || IsPlaydenEmulator(*kept_digest, retired))
-        return fail("An earlier Playden lost the game's own " + relative + "; reinstall the game to get it back.");
+      if (!kept_digest || IsZ3CloudPlayEmulator(*kept_digest, retired))
+        return fail("An earlier Z3CloudPlay lost the game's own " + relative + "; reinstall the game to get it back.");
       if (*digest != emulator->sha256) {
-        if (!WriteAtomic(path, emulator->bytes)) return fail("Playden could not set up Steam features for this game.");
+        if (!WriteAtomic(path, emulator->bytes)) return fail("Z3CloudPlay could not set up Steam features for this game.");
         result.changed.push_back(relative);
       }
       original = *kept;
@@ -282,13 +282,13 @@ SteamworksResult EmulateSteamworks(const std::string& install_root, const std::s
       // A first swap, or a newer original from a game update: keep it before replacing it.
       const auto kept = IsRegular(orig) ? ReadFile(orig, kMaxDllBytes) : std::nullopt;
       if ((!kept || *kept != *current) && !WriteAtomic(orig, *current))
-        return fail("Playden could not keep a copy of the game's " + relative + ".");
-      if (!WriteAtomic(path, emulator->bytes)) return fail("Playden could not set up Steam features for this game.");
+        return fail("Z3CloudPlay could not keep a copy of the game's " + relative + ".");
+      if (!WriteAtomic(path, emulator->bytes)) return fail("Z3CloudPlay could not set up Steam features for this game.");
       result.changed.push_back(relative);
       original = *current;
     }
     if (!WriteSettings(path.parent_path(), identity, original))
-      return fail("Playden could not write the game's Steam settings.");
+      return fail("Z3CloudPlay could not write the game's Steam settings.");
   }
   result.ok = true;
   return result;
@@ -337,12 +337,12 @@ SteamworksResult ProvideLegacySteam(const std::string& install_root, const std::
       stub = ReadFile(fs::path(emulator_dir) / "steam.dll", kMaxDllBytes);
       const auto digest = stub ? HashArtifactBytes(*stub) : std::nullopt;
       if (!digest || *digest != kLegacySteamSha256) {
-        result.message = "Playden's runtime is missing its steam.dll; reinstall Playden.";
+        result.message = "Z3CloudPlay's runtime is missing its steam.dll; reinstall Z3CloudPlay.";
         return result;
       }
     }
     if (!WriteAtomic(folder / "steam.dll", *stub)) {
-      result.message = "Playden could not add steam.dll beside the game's " + relative + ".";
+      result.message = "Z3CloudPlay could not add steam.dll beside the game's " + relative + ".";
       return result;
     }
     result.found.push_back(folder_relative.string());
@@ -364,7 +364,7 @@ SteamworksResult RemoveLegacySteam(const std::string& install_root, const std::v
     result.found.push_back(shown);
     if (!digest || *digest != kLegacySteamSha256) continue;  // the game's own
     if (::unlink(present.c_str()) != 0) {
-      result.message = "Playden could not remove its steam.dll beside the game's " + relative + ".";
+      result.message = "Z3CloudPlay could not remove its steam.dll beside the game's " + relative + ".";
       return result;
     }
     result.changed.push_back(shown);
@@ -381,15 +381,15 @@ SteamworksResult RestoreSteamworks(const std::string& install_root, const std::v
     const auto path = root / relative;
     const auto current = ReadFile(path, kMaxDllBytes);
     const auto digest = current ? HashArtifactBytes(*current) : std::nullopt;
-    if (!digest || !IsPlaydenEmulator(*digest, retired)) continue;  // already the game's own
+    if (!digest || !IsZ3CloudPlayEmulator(*digest, retired)) continue;  // already the game's own
     const auto kept = ReadFile(fs::path(path.string() + ".orig"), kMaxDllBytes);
     const auto kept_digest = kept ? HashArtifactBytes(*kept) : std::nullopt;
-    if (kept_digest && IsPlaydenEmulator(*kept_digest, retired)) {
-      result.message = "An earlier Playden lost the game's own " + relative + "; reinstall the game to get it back.";
+    if (kept_digest && IsZ3CloudPlayEmulator(*kept_digest, retired)) {
+      result.message = "An earlier Z3CloudPlay lost the game's own " + relative + "; reinstall the game to get it back.";
       return result;
     }
     if (!kept || !WriteAtomic(path, *kept)) {
-      result.message = "Playden could not put back the game's own " + relative + "; verify the download.";
+      result.message = "Z3CloudPlay could not put back the game's own " + relative + "; verify the download.";
       return result;
     }
     result.changed.push_back(relative);
@@ -440,4 +440,4 @@ bool ReadSteamworksFacts(const std::string& install_root, SteamworksIdentity* id
   return true;
 }
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

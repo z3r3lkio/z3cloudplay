@@ -6,7 +6,7 @@
 #include "runtime/package_installer.h"
 #include <optional>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 inline constexpr std::size_t kMaxSettingsPublicationOperationBytes = 2 * 1024 * 1024;
 // Frozen user request, durable before control setup or before-state capture.
 // It grants no ownership, receipt authority or readiness; OWNER/kit/activity and
@@ -96,4 +96,4 @@ Result<void> CreatePreparedSettingsPublicationOperation(const std::filesystem::p
     const SettingsPublicationOperation& operation);
 PublicationOperationLoad LoadPreparedSettingsPublicationOperation(const std::filesystem::path& control_directory,
     const std::string& transaction_id);
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

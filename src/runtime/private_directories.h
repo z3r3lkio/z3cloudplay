@@ -1,7 +1,7 @@
 #pragma once
 #include <filesystem>
 #include <string>
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 // Creates directories as the current effective user, without credential changes.
 // boundary is an existing trusted directory; private_root and descendants must
 // belong to that user and have mode 0700. Existing foreign/public directories

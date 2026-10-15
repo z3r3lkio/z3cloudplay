@@ -10,7 +10,7 @@
 #include <string_view>
 #include <vector>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 // The kit adapter constructs this only after validating manifest schema, the exact
 // file inventory and aggregate digest. Package installation treats the view as the
@@ -45,7 +45,7 @@ struct KitTitleVariant {
 };
 
 // The root-owned allow-list an any-title kit's helper reads, and the range it serves.
-inline constexpr const char* kTitleRuleAllowList = "/data/playden/title-rule/allow-list";
+inline constexpr const char* kTitleRuleAllowList = "/data/z3cloudplay/title-rule/allow-list";
 inline constexpr const char* kTitleRulePrefix = "FAKE78";
 
 enum class ImmutableArtifactLocation { kKit, kStagedTitle };
@@ -218,4 +218,4 @@ class FilesystemPackageInstaller final : public PackageInstaller {
   PackageInstallerOperations operations_;
 };
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

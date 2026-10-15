@@ -9,15 +9,15 @@
 #include <string>
 #include <vector>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
-enum class SessionOrigin { kHome, kPlayden };
+enum class SessionOrigin { kHome, kZ3CloudPlay };
 enum class WrapperSessionPhase { kStarting, kRunning, kFailed, kExited };
 
 struct WrapperSession {
   std::uint32_t schema_version = 1;
   std::string session_id;
-  SessionOrigin origin = SessionOrigin::kPlayden;
+  SessionOrigin origin = SessionOrigin::kZ3CloudPlay;
   std::string install_id;
   std::string title_id;
   std::string runtime_bundle_id;
@@ -221,4 +221,4 @@ private:
   SessionReconcileDependencies dependencies_;
 };
 
-} // namespace playden::runtime
+} // namespace z3cloudplay::runtime

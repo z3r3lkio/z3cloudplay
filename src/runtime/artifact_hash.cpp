@@ -10,7 +10,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 
 class Descriptor {
@@ -102,4 +102,4 @@ std::optional<std::string> HashArtifactFile(const std::filesystem::path& path) {
 #endif
   return hash.Finish();
 }
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

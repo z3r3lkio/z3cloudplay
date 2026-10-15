@@ -11,9 +11,9 @@
 #include <string_view>
 #include <vector>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
-// What this Playden build accepts. A kit is admitted when it is complete and its files
+// What this Z3CloudPlay build accepts. A kit is admitted when it is complete and its files
 // have the sizes and modes its own manifest lists, whichever prospero-win build it comes
 // from; what it was built from is reported, not compared (Settings > About shows it).
 // Kit files are not hashed: the manifest's hashes name the kit's version, so a changed
@@ -22,12 +22,12 @@ struct KitAdmissionConfig {
   // The kit this build was tested with: shown next to the installed one, never required.
   std::string expected_manifest_sha256;
   std::string required_architecture = "x86_64+wow64-i386";
-  // Capabilities Playden can use; a kit's other capabilities are ignored.
+  // Capabilities Z3CloudPlay can use; a kit's other capabilities are ignored.
   std::vector<std::string> known_capabilities;
   std::function<std::optional<std::string>(const std::filesystem::path&)> hash_file;
   std::function<std::optional<std::string>(std::string_view)> hash_bytes;
   // Digest of the reviewed publication-provider provenance JSON. Required when
-  // playden-publication-guard-v1 is a known capability; never read from the kit.
+  // z3cloudplay-publication-guard-v1 is a known capability; never read from the kit.
   std::optional<std::string> publication_provider_sha256;
 };
 
@@ -60,4 +60,4 @@ struct KitManifestResult {
 KitManifestResult VerifyKitManifest(const std::filesystem::path& root,
                                     const KitAdmissionConfig& config);
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

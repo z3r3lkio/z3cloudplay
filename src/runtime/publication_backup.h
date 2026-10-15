@@ -5,7 +5,7 @@
 #include <string>
 #include <string_view>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 enum class PublicationRecoveryState { kAbsent, kValid, kCorrupt, kUnavailable };
 inline constexpr std::size_t kMaxPublicationRegistryBackupBytes = 32 * 1024 * 1024;
@@ -35,4 +35,4 @@ PublicationBackupLoad LoadPublicationRegistryBackup(
     const std::filesystem::path& control_directory, const std::string& transaction_id,
     const RegistryBackupBinding& binding);
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

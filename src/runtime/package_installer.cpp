@@ -22,15 +22,15 @@
 #include <sys/stat.h>
 #include <sys/file.h>
 
-#if defined(__PROSPERO__) || (defined(PLAYDEN_PLATFORM_PS5) && PLAYDEN_PLATFORM_PS5)
-extern "C" int playden_ps5_file_lock(int descriptor, int operation);
+#if defined(__PROSPERO__) || (defined(Z3CLOUDPLAY_PLATFORM_PS5) && Z3CLOUDPLAY_PLATFORM_PS5)
+extern "C" int z3cloudplay_ps5_file_lock(int descriptor, int operation);
 #endif
 #include <fcntl.h>
 #include <unistd.h>
 #include <dirent.h>
 #include <memory>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace fs = std::filesystem;
 
 struct FilesystemPackageInstaller::Mapping {
@@ -91,9 +91,9 @@ class PartTimes {
   std::vector<std::pair<std::string, std::uint64_t>> parts_;
 };
 constexpr std::size_t kMaxPublicationBytes = 8192;
-constexpr char kTitleOwner[] = ".playden-title-owner";
-constexpr char kTemplateOwner[] = ".playden-template-owner";
-constexpr char kStageOwner[] = ".playden-stage-owner";
+constexpr char kTitleOwner[] = ".z3cloudplay-title-owner";
+constexpr char kTemplateOwner[] = ".z3cloudplay-template-owner";
+constexpr char kStageOwner[] = ".z3cloudplay-stage-owner";
 
 PackageActionResult Complete() {
   return {PackageActionState::kComplete, {}, {}};
@@ -360,19 +360,19 @@ bool MarkerIdentifies(const fs::path& path, const RuntimeInstall& record, const 
   return seen[0] && seen[1] && seen[2] && seen[3];
 }
 
-const playden::steam::json::Value* Required(
-    const playden::steam::json::Value& value, const char* name,
-    playden::steam::json::Value::Type type) {
+const z3cloudplay::steam::json::Value* Required(
+    const z3cloudplay::steam::json::Value& value, const char* name,
+    z3cloudplay::steam::json::Value::Type type) {
   const auto* member = value.Find(name);
   return member && member->type() == type ? member : nullptr;
 }
 
 bool DescriptorMatches(const RuntimeInstall& record, std::string_view bytes) {
   if (bytes.empty() || bytes.size() > kMaxPublicationBytes) return false;
-  auto parsed = playden::steam::json::Parse(
+  auto parsed = z3cloudplay::steam::json::Parse(
       bytes, {kMaxPublicationBytes, 4, 32, kMaxPublicationBytes});
   if (!parsed || !parsed->is_object()) return false;
-  using Type = playden::steam::json::Value::Type;
+  using Type = z3cloudplay::steam::json::Value::Type;
   const auto* schema = Required(*parsed, "schema_version", Type::kNumber);
   // Schema 1 infers the historical per-title root; schema 2 records the actual
   // download root, which may be an existing launcher path or a selected volume.
@@ -516,7 +516,7 @@ bool FilesystemPackageInstaller::ValidView() const {
   return true;
 }
 
-// The kit's own recipe, or the one Playden generated for this game from Steam's
+// The kit's own recipe, or the one Z3CloudPlay generated for this game from Steam's
 // launch options (runtime::GeneratedRecipeId: "steam-<app id>-auto"). The kit's
 // runtime and template run either; only the launch entries differ.
 bool FilesystemPackageInstaller::RecipeAccepted(const RuntimeInstall& record) const {
@@ -528,14 +528,14 @@ bool FilesystemPackageInstaller::RecipeAccepted(const RuntimeInstall& record) co
 std::optional<FilesystemPackageInstaller::ResolvedPaths>
 FilesystemPackageInstaller::Resolve(const RuntimeInstall& record) const {
   if (!ValidView() || !Variant(record) ||
-      record.data_root != "/data/playden/games/" + record.install_id ||
+      record.data_root != "/data/z3cloudplay/games/" + record.install_id ||
       record.install_id.empty() || record.install_id.find('/') != std::string::npos ||
       !IsManagedTitle(record.title_id) || record.default_profile_id.empty() ||
       record.default_profile_id.find('/') != std::string::npos ||
       record.runtime_bundle_id != kit_.runtime.bundle_id ||
       !RecipeAccepted(record))
     return std::nullopt;
-  const fs::path game = paths_.host_data_root / "playden/games" / record.install_id;
+  const fs::path game = paths_.host_data_root / "z3cloudplay/games" / record.install_id;
   const fs::path title = paths_.host_data_root / "homebrew" / record.title_id;
   const fs::path library = game / "library";
   ResolvedPaths resolved;
@@ -543,16 +543,16 @@ FilesystemPackageInstaller::Resolve(const RuntimeInstall& record) const {
   resolved.game = game;
   resolved.library = library;
   resolved.bottle = library / "prefixes/game";
-  resolved.title_staging = paths_.host_data_root / "playden/staging" /
+  resolved.title_staging = paths_.host_data_root / "z3cloudplay/staging" /
                            ("title-" + record.install_id);
-  resolved.bottle_staging = paths_.host_data_root / "playden/staging" /
+  resolved.bottle_staging = paths_.host_data_root / "z3cloudplay/staging" /
                             ("bottle-" + record.install_id);
   resolved.publication.profile = library / "profiles" /
                                  (record.default_profile_id + ".profile");
   resolved.publication.catalog = library / "profiles/profiles.lst";
   resolved.publication.input_directory = library / "input";
   resolved.publication.descriptor = title / "game-launch.json";
-  resolved.publication.metadata = library / "profiles/.playden-publication";
+  resolved.publication.metadata = library / "profiles/.z3cloudplay-publication";
   std::error_code root_error;
   const auto root_status = fs::symlink_status(paths_.host_data_root, root_error);
   if (root_error && root_error != std::errc::no_such_file_or_directory) return std::nullopt;
@@ -611,7 +611,7 @@ FilesystemPackageInstaller::TitleMappings(const RuntimeInstall& record) const {
       mapping.source = own;
     }
     // The any-title shell's own param.json names its template ID: a game title only ever
-    // gets the parameters Playden wrote for it.
+    // gets the parameters Z3CloudPlay wrote for it.
     if (variant->any_title && destination == kTitleMetadataFiles[0] && !mapping.owned) return {};
     mappings.push_back(std::move(mapping));
   }
@@ -643,9 +643,9 @@ PackageActionResult FilesystemPackageInstaller::WriteTitleMetadata(const Runtime
   const auto paths = Resolve(record);
   if (!paths) return Failed("kit-invalid", "record or verified kit view is invalid");
   // The parameters name this title, whichever kit title they were made from.
-  const auto parameters = playden::steam::json::Parse(param_json, {64 * 1024, 8, 1024, 64 * 1024});
+  const auto parameters = z3cloudplay::steam::json::Parse(param_json, {64 * 1024, 8, 1024, 64 * 1024});
   const auto* title = parameters && parameters->is_object()
-                          ? Required(*parameters, "titleId", playden::steam::json::Value::Type::kString)
+                          ? Required(*parameters, "titleId", z3cloudplay::steam::json::Value::Type::kString)
                           : nullptr;
   if (!title || title->text() != record.title_id)
     return Failed("title-metadata", "the title parameters do not name this title");
@@ -789,8 +789,8 @@ std::string FilesystemPackageInstaller::AdmissionDiagnostic(const RuntimeInstall
   PwTitlePublicationPlatform platform{};
   platform.host_root = prefix.empty() ? nullptr : prefix.c_str(); platform.owner_uid = ::geteuid();
   platform.try_lock_shared = [](void*, int descriptor) {
-#if defined(__PROSPERO__) || (defined(PLAYDEN_PLATFORM_PS5) && PLAYDEN_PLATFORM_PS5)
-    return playden_ps5_file_lock(descriptor, LOCK_SH | LOCK_NB);
+#if defined(__PROSPERO__) || (defined(Z3CLOUDPLAY_PLATFORM_PS5) && Z3CLOUDPLAY_PLATFORM_PS5)
+    return z3cloudplay_ps5_file_lock(descriptor, LOCK_SH | LOCK_NB);
 #else
     return ::flock(descriptor, LOCK_SH | LOCK_NB);
 #endif
@@ -850,8 +850,8 @@ bool FilesystemPackageInstaller::PublicationMatches(
   PwTitlePublicationPlatform platform{};
   platform.host_root = prefix.empty() ? nullptr : prefix.c_str(); platform.owner_uid = ::geteuid();
   platform.try_lock_shared = [](void*, int descriptor) {
-#if defined(__PROSPERO__) || (defined(PLAYDEN_PLATFORM_PS5) && PLAYDEN_PLATFORM_PS5)
-    return playden_ps5_file_lock(descriptor, LOCK_SH | LOCK_NB);
+#if defined(__PROSPERO__) || (defined(Z3CLOUDPLAY_PLATFORM_PS5) && Z3CLOUDPLAY_PLATFORM_PS5)
+    return z3cloudplay_ps5_file_lock(descriptor, LOCK_SH | LOCK_NB);
 #else
     return ::flock(descriptor, LOCK_SH | LOCK_NB);
 #endif
@@ -874,7 +874,7 @@ bool FilesystemPackageInstaller::PublicationMatches(
     PwTitlePublicationLease* lease;
     ~LeaseScope() { pw_title_publication_close(lease); }
   } held{&lease};
-  auto control = platform::ManagedDirectory::Open(paths.game / ".playden-control", platform::DirectoryPolicy::kPrivate);
+  auto control = platform::ManagedDirectory::Open(paths.game / ".z3cloudplay-control", platform::DirectoryPolicy::kPrivate);
   if (!control) return false;
   const int fd = control->OpenRegularFile("publication-state.v1", true, 0600);
   if (fd < 0) return false;
@@ -1041,7 +1041,7 @@ PackageActionResult FilesystemPackageInstaller::CopyMappings(
     if (mapping.file && mapping.file->size <= std::numeric_limits<std::uint64_t>::max() / 4 - required)
       required += mapping.file->size;
   // Progress: the bytes copied. Sources are not hashed again here: kit admission
-  // hashed every kit file when Playden started.
+  // hashed every kit file when Z3CloudPlay started.
   const std::uint64_t work_total = required;
   std::uint64_t work_done = 0;
   const auto report = [&](std::uint64_t amount) {
@@ -1241,7 +1241,7 @@ PackageActionResult FilesystemPackageInstaller::CopyMappings(
     return Failed("destination-invalid", "final destination contains a symbolic link");
   if (stage_kind == "template") {
     std::string detail;
-    const auto game = paths_.host_data_root / "playden/games" / record.install_id;
+    const auto game = paths_.host_data_root / "z3cloudplay/games" / record.install_id;
     if (!EnsurePrivateDirectories(paths_.host_data_root, game, final.parent_path(), &detail))
       return Failed("private-directory", detail);
   } else {
@@ -1569,4 +1569,4 @@ PackageActionResult FilesystemPackageInstaller::PublishProfile(const RuntimeInst
   return Complete();
 }
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

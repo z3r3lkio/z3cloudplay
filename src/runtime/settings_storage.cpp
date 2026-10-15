@@ -3,7 +3,7 @@
 #include "runtime/private_directories.h"
 #include "platform/managed_directory.h"
 #include <cerrno>
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 std::optional<std::filesystem::path> PrepareGameSettingsStorage(
     const std::filesystem::path& state_root, std::string* reason) {
   if (reason) reason->clear();

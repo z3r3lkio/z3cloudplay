@@ -1,5 +1,5 @@
 #include "runtime/publication_transaction.h"
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 bool IsSettingsPublicationTransactionId(const std::string& transaction) {
   bool nonzero = false;
   if (transaction.size() != 36) return false;

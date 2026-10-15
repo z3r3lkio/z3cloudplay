@@ -1,5 +1,5 @@
 #pragma once
 #include <string>
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 bool IsSettingsPublicationTransactionId(const std::string& transaction_id);
 }

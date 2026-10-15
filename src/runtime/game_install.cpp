@@ -9,7 +9,7 @@
 #include <string>
 #include <unordered_set>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 // Text builder with the stream operators this file uses. iostreams need locale
 // support that the console's libc does not provide.
@@ -168,7 +168,7 @@ const JsonValue* Required(const JsonValue& object, const char* key, JsonValue::T
 bool ValidRecord(const RuntimeInstall& record) {
   if (record.schema_version != 1 || !IsDescriptorId(record.install_id) ||
       !IsManagedTitle(record.title_id) || record.app_id == 0 ||
-      record.data_root != "/data/playden/games/" + record.install_id ||
+      record.data_root != "/data/z3cloudplay/games/" + record.install_id ||
       !IsDescriptorId(record.default_profile_id) || !IsDescriptorId(record.runtime_bundle_id) ||
       !IsDescriptorId(record.recipe_id) || !IsDescriptorId(record.recipe_version) ||
       record.exit_policy != "exit-title" || !IsSimpleId(record.launch_entry_id) ||
@@ -436,7 +436,7 @@ RepositoryResult<RuntimeInstall> RuntimeInstallRepository::Reserve(const Reserve
         "runtime install registry has reached its record limit");
   RuntimeInstall candidate;
   candidate.install_id = request.install_id; candidate.app_id = request.app_id;
-  candidate.data_root = "/data/playden/games/" + request.install_id;
+  candidate.data_root = "/data/z3cloudplay/games/" + request.install_id;
   candidate.default_profile_id = request.default_profile_id;
   candidate.runtime_bundle_id = request.runtime_bundle_id; candidate.recipe_id = request.recipe_id;
   candidate.recipe_version = request.recipe_version; candidate.settings_revision = request.settings_revision;
@@ -529,4 +529,4 @@ RepositoryResult<void> RuntimeInstallRepository::EraseAfterUnregister(const std:
   return RepositoryResult<void>::Success();
 }
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

@@ -4,7 +4,7 @@
 
 #include <algorithm>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 KitAdmissionConfig DevelopmentKitAdmission() {
   KitAdmissionConfig config;
@@ -18,4 +18,4 @@ KitAdmissionConfig DevelopmentKitAdmission() {
   return config;
 }
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

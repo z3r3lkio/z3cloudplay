@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 struct RecordUpdateResult {
   bool ok = false;
@@ -205,4 +205,4 @@ private:
   InstallPublicationDriver publication_;
 };
 
-} // namespace playden::runtime
+} // namespace z3cloudplay::runtime

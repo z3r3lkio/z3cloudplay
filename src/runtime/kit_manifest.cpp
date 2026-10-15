@@ -13,7 +13,7 @@
 #include <unistd.h>
 #include <system_error>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 
 namespace fs = std::filesystem;
@@ -22,8 +22,8 @@ using Json = steam::json::Value;
 constexpr std::size_t kMaxManifestBytes = 8 * 1024 * 1024;
 constexpr std::size_t kMaxFiles = 32768;
 constexpr std::size_t kMaxVariants = 1000;
-constexpr const char* kSchema = "playden-prospero-kit/1";
-constexpr const char* kPublicationGuard = "playden-publication-guard-v1";
+constexpr const char* kSchema = "z3cloudplay-prospero-kit/1";
+constexpr const char* kPublicationGuard = "z3cloudplay-publication-guard-v1";
 constexpr const char* kCoreDlls[] = {"ntdll.dll", "kernel32.dll", "kernelbase.dll",
                                      "mmdevapi.dll", "dinput8.dll", "rsaenh.dll"};
 constexpr const char* kNativePrxs[] = {"ntdll.prx", "wineserver.prx", "win32u.prx",
@@ -549,7 +549,7 @@ class Verifier {
           retry |= feature.is_string() && feature.text() == "root_layout_probe_retry";
           rule_feature |= feature.is_string() && feature.text() == "title_rule";
         }
-      // One shell for every game: its helper serves FAKE78xxx titles listed in Playden's
+      // One shell for every game: its helper serves FAKE78xxx titles listed in Z3CloudPlay's
       // root-owned allow-list, and the shell says it was built for that rule.
       const auto* any_title = variant.Find("any_title");
       if (any_title && any_title->type() != Json::Type::kBool)
@@ -569,7 +569,7 @@ class Verifier {
             !build_any || !build_any->boolean() || !build_prefix || build_prefix->text() != prefix->text() ||
             !build_list || build_list->text() != allow_list->text())
           return Failure(KitManifestStatus::kIntegrityFailure,
-                         "the any-title variant lacks its capability or Playden's title rule");
+                         "the any-title variant lacks its capability or Z3CloudPlay's title rule");
         any_title_seen = true;
         expected_target = prefix->text() + "*";
       } else if (build->Find("any_title") != nullptr) {
@@ -632,4 +632,4 @@ KitManifestResult VerifyKitManifest(const std::filesystem::path& root,
   return Verifier(root, config).Run();
 }
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

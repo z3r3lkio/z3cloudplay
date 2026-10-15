@@ -9,7 +9,7 @@
 #include <set>
 #include <vector>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 
 bool HasControl(std::string_view text) {
@@ -384,7 +384,7 @@ std::optional<PeArchitecture> ReadPeArchitecture(const std::string& path) {
   return ParsePeArchitecture(head.data(), head.size());
 }
 
-std::string ProsperoProfileId(std::uint32_t app_id) { return "playden-steam-" + std::to_string(app_id); }
+std::string ProsperoProfileId(std::uint32_t app_id) { return "z3cloudplay-steam-" + std::to_string(app_id); }
 
 bool DraftProsperoProfile(const ProsperoGame& game, ProsperoProfile* profile, std::string* reason) {
   const auto fail = [&](const char* why) {
@@ -420,7 +420,7 @@ bool DraftProsperoProfile(const ProsperoGame& game, ProsperoProfile* profile, st
 
   ProsperoProfile drafted;
   drafted.id = ProsperoProfileId(game.app_id);
-  std::string text = "; Drafted by Playden from Steam launch data.\n[application]\n";
+  std::string text = "; Drafted by Z3CloudPlay from Steam launch data.\n[application]\n";
   text += "id = " + drafted.id + "\n";
   text += "name = " + CleanName(game.name, game.app_id) + "\n";
   text += "executable = " + executable_path + "\n";
@@ -474,4 +474,4 @@ bool PublishProsperoProfile(const std::string& prospero_root, const ProsperoProf
   return true;
 }
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

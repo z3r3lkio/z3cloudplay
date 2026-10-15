@@ -9,11 +9,11 @@
 #include <string_view>
 #include <vector>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 // prospero-win (PPSA99995) launches a Windows game from a strict INI profile listed in
 // profiles/profiles.lst under its data root. These helpers draft that profile for a game
-// Playden installed, following the format of prospero-win's src/pw_app_profile.h; limits
+// Z3CloudPlay installed, following the format of prospero-win's src/pw_app_profile.h; limits
 // mirror its parser so a drafted profile is never rejected for length.
 enum class PeArchitecture { kPe32, kPe64 };
 
@@ -29,7 +29,7 @@ struct ProsperoGame {
   steam::AppLaunch launch;
   PeArchitecture architecture = PeArchitecture::kPe32;
   // Shared Wine prefix the game runs in; built on a PC and pushed to prospero-win.
-  std::string prefix = "playden";
+  std::string prefix = "z3cloudplay";
 };
 
 struct ProsperoProfile {
@@ -95,4 +95,4 @@ bool DraftProsperoProfile(const ProsperoGame& game, ProsperoProfile* profile, st
 bool PublishProsperoProfile(const std::string& prospero_root, const ProsperoProfile& profile,
                             std::string* reason);
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

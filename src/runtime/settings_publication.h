@@ -4,7 +4,7 @@
 #include "runtime/package_installer.h"
 #include "runtime/settings_publication_journal.h"
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 // Fills the settings-owned fields of a profile publication from a launch plan: the profile
 // id and bytes, the settings revision and every input preset the profile references. The
@@ -103,4 +103,4 @@ Result<SettingsPublicationOperation> CaptureSettingsPublicationOperation(
     const RuntimeInstall& record, const SettingsLaunchPlan& plan, const std::string& kit_id,
     const std::string& transaction_id, std::int64_t registry_unix_time,
     int borrowed_publisher_fd, const std::filesystem::path& host_namespace_prefix = {});
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

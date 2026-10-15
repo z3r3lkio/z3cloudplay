@@ -18,9 +18,9 @@
 #include <unistd.h>
 #include <utility>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace fs = std::filesystem;
-namespace json = playden::steam::json;
+namespace json = z3cloudplay::steam::json;
 using platform::DirectoryPolicy;
 using platform::ManagedDirectory;
 
@@ -135,7 +135,7 @@ std::optional<std::map<std::string, std::string>> ParseMarker(
 
 bool MarkerMatches(const ManagedDirectory &bottle,
                    const RuntimeInstall &record) {
-  const auto bytes = ReadFile(bottle, ".playden-template-owner",
+  const auto bytes = ReadFile(bottle, ".z3cloudplay-template-owner",
                               FilesystemReconcileSessionSource::kMaxMarkerBytes);
   if (!bytes) return false;
   const auto marker = ParseMarker(*bytes);
@@ -216,8 +216,8 @@ std::optional<WrapperSession> ParseSession(std::string_view bytes,
   result.settings_revision = *revision->AsUint64();
   if (origin->text() == "home")
     result.origin = SessionOrigin::kHome;
-  else if (origin->text() == "playden")
-    result.origin = SessionOrigin::kPlayden;
+  else if (origin->text() == "z3cloudplay")
+    result.origin = SessionOrigin::kZ3CloudPlay;
   else
     return std::nullopt;
   if (phase->text() == "starting")
@@ -332,7 +332,7 @@ std::string Escape(std::string_view value) {
 const char *OriginName(SessionOrigin origin) {
   switch (origin) {
   case SessionOrigin::kHome: return "home";
-  case SessionOrigin::kPlayden: return "playden";
+  case SessionOrigin::kZ3CloudPlay: return "z3cloudplay";
   }
   return nullptr;
 }
@@ -492,7 +492,7 @@ std::optional<ManagedDirectory> FilesystemReconcileSessionSource::OpenSessions(
                          "runtime install identity is invalid");
     return std::nullopt;
   }
-  const fs::path expected = fs::path(kCanonicalDataRoot) / "playden/games" /
+  const fs::path expected = fs::path(kCanonicalDataRoot) / "z3cloudplay/games" /
                             record.install_id;
   if (record.data_root != expected.generic_string() ||
       host_data_root_.empty() || !host_data_root_.is_absolute())
@@ -501,7 +501,7 @@ std::optional<ManagedDirectory> FilesystemReconcileSessionSource::OpenSessions(
                          "session root is not the canonical managed game root");
     return std::nullopt;
   }
-  const auto mapped = host_data_root_ / "playden/games" / record.install_id;
+  const auto mapped = host_data_root_ / "z3cloudplay/games" / record.install_id;
   auto game = ManagedDirectory::Open(mapped, DirectoryPolicy::kPrivate);
   if (!game)
     {
@@ -614,4 +614,4 @@ ReconcileJournalResult DurableReconcileJournal::Save(
   return ReconcileJournalResult::Success();
 }
 
-} // namespace playden::runtime
+} // namespace z3cloudplay::runtime

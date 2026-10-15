@@ -10,7 +10,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 
 constexpr std::size_t kMaxScriptBytes = 1024 * 1024;
@@ -198,4 +198,4 @@ InstallScriptResult ApplyInstallScripts(const std::string& game_root, const std:
   return result;
 }
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

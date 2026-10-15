@@ -1,7 +1,7 @@
 #include "runtime/kit_admission.h"
 #include "runtime/artifact_hash.h"
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 KitManifestResult VerifyInstalledKit(const std::filesystem::path& root,
                                     const KitAdmissionConfig& config) {
   auto production = config;
@@ -9,4 +9,4 @@ KitManifestResult VerifyInstalledKit(const std::filesystem::path& root,
   production.hash_bytes = HashArtifactBytes;
   return VerifyKitManifest(root, production);
 }
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

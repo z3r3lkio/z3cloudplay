@@ -12,7 +12,7 @@ extern "C" {
 #include <cstring>
 #include <unistd.h>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 using platform::ManagedDirectory;
 using platform::DirectoryPolicy;
@@ -30,11 +30,11 @@ bool PathsMatch(const SettingsPublicationOperation& o, const PublicationPaths& p
       p.catalog == Map(prefix, profiles + "profiles.lst") &&
       p.input_directory == Map(prefix, o.install.data_root + "/library/input") &&
       p.descriptor == Map(prefix, "/data/homebrew/" + o.install.title_id + "/game-launch.json") &&
-      p.metadata == Map(prefix, profiles + ".playden-publication");
+      p.metadata == Map(prefix, profiles + ".z3cloudplay-publication");
 }
 // The publisher still holds its lease: the descriptor is open and is the file the
 // control folder names publication.lock. Owner, mode and folder chains are not
-// re-proven at every step; only Playden writes these folders.
+// re-proven at every step; only Z3CloudPlay writes these folders.
 bool LeaseHeld(int borrowed, const std::filesystem::path& control) {
   return platform::ManagedFileLock::Holds(borrowed, control / "publication.lock");
 }
@@ -50,7 +50,7 @@ bool OwnedGameDirectory(const struct stat& info, bool unowned) {
 // Reads a regular file (never through a symbolic link) up to maximum bytes, and
 // syncs it so what an apply builds on is durable. The file read is the one that
 // was statted (same device, inode and size); owner, mode, link count and times
-// are not checked, since only Playden writes these folders. The mode is returned
+// are not checked, since only Z3CloudPlay writes these folders. The mode is returned
 // for writers that keep it.
 std::optional<FrozenFileSnapshot> ReadPublicationFile(const ManagedDirectory& directory,
     const std::string& name, std::size_t maximum) {
@@ -134,7 +134,7 @@ PackageActionResult PublishSettingsOperation(const SettingsPublicationOperation&
   if (!deps.activity || !deps.block_owner || !deps.preflight || !deps.apply_files ||
       !deps.verify_files || !deps.reconcile_committed)
     return Failure("publication-unavailable", "Required publication adapters are unavailable.");
-  const auto control = Map(deps.host_namespace_prefix, o.install.data_root + "/.playden-control");
+  const auto control = Map(deps.host_namespace_prefix, o.install.data_root + "/.z3cloudplay-control");
   auto directory = ManagedDirectory::Open(control, DirectoryPolicy::kPrivate);
   if (!directory) return Failure("publication-control", "Private publication control directory is unavailable.");
   auto lease = platform::ManagedFileLock::Acquire(*directory, "publication.lock", platform::LockMode::kPublisher);
@@ -167,7 +167,7 @@ PackageActionResult PublishSettingsOperation(const SettingsPublicationOperation&
         Map(deps.host_namespace_prefix, profile_root + "profiles.lst"),
         Map(deps.host_namespace_prefix, previous.install.data_root + "/library/input"),
         Map(deps.host_namespace_prefix, "/data/homebrew/" + previous.install.title_id + "/game-launch.json"),
-        Map(deps.host_namespace_prefix, profile_root + ".playden-publication")};
+        Map(deps.host_namespace_prefix, profile_root + ".z3cloudplay-publication")};
       result = deps.verify_files(previous, previous_paths, lease->fd(), true); if (!Complete(result)) return result;
       result = deps.authorize_retirement(previous, o); if (!Complete(result)) return result;
       if (!ArchiveSettingsPublicationOperation(control, previous).ok() || !held())
@@ -263,7 +263,7 @@ PackageActionResult ApplyPendingPublicationRegistry(const SettingsPublicationOpe
   auto encoded = EncodeSettingsPublicationOperation(o, &reason);
   if (!encoded || (!prefix.empty() && (!prefix.is_absolute() || prefix != prefix.lexically_normal())))
     return Failure("publication-invalid", "Frozen registry operation or namespace is invalid.");
-  const auto control = Map(prefix, o.install.data_root + "/.playden-control");
+  const auto control = Map(prefix, o.install.data_root + "/.z3cloudplay-control");
   auto directory = ManagedDirectory::Open(control, DirectoryPolicy::kPrivate);
   auto held = [&] { return directory && LeaseHeld(borrowed, control); };
   if (!held()) return Failure("publication-lock", "Registry publisher descriptor is unavailable or changed.");
@@ -319,7 +319,7 @@ PackageActionResult ApplyPendingPublicationDxvk(const SettingsPublicationOperati
   auto encoded = EncodeSettingsPublicationOperation(o, &reason);
   if (!encoded || (!prefix.empty() && (!prefix.is_absolute() || prefix != prefix.lexically_normal())))
     return Failure("publication-invalid", "Frozen DXVK operation or namespace is invalid.");
-  const auto control = Map(prefix, o.install.data_root + "/.playden-control");
+  const auto control = Map(prefix, o.install.data_root + "/.z3cloudplay-control");
   auto directory = ManagedDirectory::Open(control, DirectoryPolicy::kPrivate);
   auto held = [&] { return directory && LeaseHeld(borrowed, control); };
   if (!held()) return Failure("publication-lock", "Registry publisher descriptor is unavailable or changed.");
@@ -394,7 +394,7 @@ PackageActionResult ApplyPendingPublicationFiles(const SettingsPublicationOperat
     return Failure("publication-invalid", "Frozen file operation or canonical paths are invalid.");
   auto result = ApplyPendingPublicationRegistry(o, borrowed, prefix);
   if (!Complete(result)) return result;
-  const auto control = Map(prefix, o.install.data_root + "/.playden-control");
+  const auto control = Map(prefix, o.install.data_root + "/.z3cloudplay-control");
   auto directory = ManagedDirectory::Open(control, DirectoryPolicy::kPrivate);
   auto held = [&] { return directory && LeaseHeld(borrowed, control); };
   auto checkpoint = [&](const std::filesystem::path& path) { return (!after_effect || after_effect(path)) && held(); };
@@ -432,7 +432,7 @@ PackageActionResult ApplyPendingPublicationFiles(const SettingsPublicationOperat
     // A file the previous committed set published must still be those bytes or the
     // intended ones (the resume rule). A new destination takes whatever an earlier
     // apply left there (a preset switched away from and back to): these files are
-    // Playden's own output, and an interrupted write leaves the old or new file.
+    // Z3CloudPlay's own output, and an interrupted write leaves the old or new file.
     const bool original = prior_hash.empty() || (observed->present && digest && *digest == prior_hash);
     if (!original && !intended)
       return Failure("publication-file-collision", "Publication file matches neither owned prior nor intended bytes.");
@@ -472,7 +472,7 @@ PackageActionResult PreflightSettingsPublication(const SettingsPublicationOperat
   if (!EncodeSettingsPublicationOperation(o, &reason) || !PathsMatch(o, paths, prefix))
     return Failure("publication-invalid", "Frozen preflight operation or canonical paths are invalid.");
   auto data = ManagedDirectory::Open(Map(prefix, o.install.data_root), DirectoryPolicy::kPrivate);
-  auto control = data ? data->OpenChild(".playden-control", DirectoryPolicy::kPrivate) : std::nullopt;
+  auto control = data ? data->OpenChild(".z3cloudplay-control", DirectoryPolicy::kPrivate) : std::nullopt;
   auto held = [&] { return control && LeaseHeld(borrowed, control->path()); };
   if (!held()) return Failure("publication-lock", "Preflight publisher descriptor is unavailable or changed.");
   auto receipt = ReadReceipt(control->path(), *control);
@@ -491,7 +491,7 @@ PackageActionResult PreflightSettingsPublication(const SettingsPublicationOperat
     return Failure("publication-invalid", "Frozen preflight metadata is invalid.");
   // Destinations without a previous committed version are not refused: an earlier
   // apply's leftovers (presets switched A -> B -> A, an interrupted first setup) are
-  // Playden's own files and are written over.
+  // Z3CloudPlay's own files and are written over.
   if (!initial) {
     const auto host = prefix.string(); PwTitlePublicationPlatform platform{};
     platform.host_root = host.empty() ? nullptr : host.c_str(); platform.owner_uid = geteuid();
@@ -518,7 +518,7 @@ PackageActionResult PreflightSettingsPublication(const SettingsPublicationOperat
   auto before = ReadPublicationFile(*game, "dxvk.conf", 256 * 1024);
   if (!before || before->present != o.dxvk_before.present || (before->present && before->bytes != o.dxvk_before.bytes))
     return Failure("publication-preflight-snapshot", "Live DXVK disagrees with the frozen before snapshot.");
-  // A dxvk.conf Playden did not write (one the game ships) is kept in the frozen
+  // A dxvk.conf Z3CloudPlay did not write (one the game ships) is kept in the frozen
   // before-snapshot, then written over or removed as the title's contract requires.
   auto prefixes = library->OpenChild("prefixes", DirectoryPolicy::kPrivate);
   auto bottle = prefixes ? prefixes->OpenChild("game", DirectoryPolicy::kPrivate) : std::nullopt;
@@ -633,7 +633,7 @@ Result<SettingsPublicationOperation> CaptureSettingsPublicationOperation(const R
   auto metadata = SerializePublicationMetadata(m);
   if (!metadata) return fail("Completion metadata is invalid."); o.metadata_bytes = *metadata;
   auto data = ManagedDirectory::Open(Map(prefix, r.data_root), DirectoryPolicy::kPrivate);
-  auto control = data ? data->OpenChild(".playden-control", DirectoryPolicy::kPrivate) : std::nullopt;
+  auto control = data ? data->OpenChild(".z3cloudplay-control", DirectoryPolicy::kPrivate) : std::nullopt;
   auto held = [&] { return control && LeaseHeld(borrowed, control->path()); };
   if (!held()) return fail("Qualified publisher descriptor/private tree is unavailable.");
   auto receipt = ReadReceipt(control->path(), *control);
@@ -645,7 +645,7 @@ Result<SettingsPublicationOperation> CaptureSettingsPublicationOperation(const R
     const auto host = prefix.string(); PwTitlePublicationPlatform platform{};
     platform.host_root = host.empty() ? nullptr : host.c_str(); platform.owner_uid = geteuid(); char error[256]{};
     auto profiles = library->OpenChild("profiles", DirectoryPolicy::kPrivate);
-    auto prior = profiles ? ReadPublicationFile(*profiles, ".playden-publication", 32768) : std::nullopt;
+    auto prior = profiles ? ReadPublicationFile(*profiles, ".z3cloudplay-publication", 32768) : std::nullopt;
     if (pw_title_publication_parse(reinterpret_cast<const uint8_t*>(receipt.bytes.data()), receipt.bytes.size(), &parsed) != PW_OK ||
         parsed.phase != PW_TITLE_PUBLICATION_COMMITTED || !prior || !prior->present ||
         pw_title_publication_read_descriptor(("/data/homebrew/" + r.title_id + "/game-launch.json").c_str(), r.title_id.c_str(),
@@ -695,9 +695,9 @@ Result<SettingsPublicationOperation> CaptureSettingsPublicationOperation(const R
   const auto profiles = r.data_root + "/library/profiles/";
   PublicationPaths paths{Map(prefix, profiles + plan.profile_id + ".profile"), Map(prefix, profiles + "profiles.lst"),
       Map(prefix, r.data_root + "/library/input"), Map(prefix, "/data/homebrew/" + r.title_id + "/game-launch.json"),
-      Map(prefix, profiles + ".playden-publication")};
+      Map(prefix, profiles + ".z3cloudplay-publication")};
   auto preflight = PreflightSettingsPublication(*frozen, paths, borrowed, prefix);
   if (!Complete(preflight) || !held()) return fail(preflight.message.empty() ? "Captured operation preflight failed." : preflight.message);
   return Result<SettingsPublicationOperation>::Success(std::move(*frozen));
 }
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

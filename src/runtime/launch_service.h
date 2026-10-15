@@ -9,7 +9,7 @@
 #include <optional>
 #include <string>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 enum class LaunchState {
   kIdle,
@@ -266,4 +266,4 @@ private:
   bool persistence_uncertain_ = false;
 };
 
-} // namespace playden::runtime
+} // namespace z3cloudplay::runtime

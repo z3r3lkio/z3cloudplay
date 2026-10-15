@@ -7,12 +7,12 @@
 #include <string_view>
 #include <vector>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 // A Steam install script (installscript.vdf in the game folder): Steam applies its Registry
 // section on a game's first start, and some games look for those keys (Fallout: New Vegas's
 // launcher offers only "Install" without HKLM\SOFTWARE\Bethesda Softworks\FalloutNV
-// "Installed Path"). Playden writes them into the bottle instead. Run Process entries
+// "Installed Path"). Z3CloudPlay writes them into the bottle instead. Run Process entries
 // (redistributable installers) are not run: Wine's built-ins stand in for them.
 
 // The values a script's Registry section sets, by hive. %INSTALLDIR% becomes install_dir (the
@@ -41,4 +41,4 @@ struct InstallScriptResult {
 InstallScriptResult ApplyInstallScripts(const std::string& game_root, const std::string& install_dir,
                                         const std::string& prefix_dir, std::int64_t unix_time);
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime
