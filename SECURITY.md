@@ -2,11 +2,11 @@
 
 **Status: development snapshot; NOT READY for use with a valuable Steam account.**
 
-The imported authentication implementation currently persists Steam refresh and access tokens in cleartext in `src/steam/session_store.cpp` as `session.v1`. File permissions and checksums do not provide encryption. The repository's new name does not change this risk.
+The legacy `SessionStore` still contains code capable of persisting Steam credentials in cleartext as `session.v1`. The PS5 entry point now uses an ephemeral in-memory repository for all its Steam service instances, and attempts to remove legacy files at startup. This change has not been verified on PS5 hardware.
 
 ## Implementation progress (October 15, 2026)
 
-A standalone vault has been added under `src/steam/secure_session_vault.{h,cpp}`, with AES-256-GCM, randomly generated salts and nonces, PBKDF2-HMAC-SHA256 (600,000 rounds), authenticated metadata, and generic error responses. A standalone test was added and registered in CMake, but it has **not yet been successfully executed or verified on PS5**. The vault is **not connected to Steam session persistence**. The existing `session.v1` remains plaintext.
+A standalone vault has been added under `src/steam/secure_session_vault.{h,cpp}`, with AES-256-GCM, randomly generated salts and nonces, PBKDF2-HMAC-SHA256 (600,000 rounds), authenticated metadata, and generic error responses. A standalone test was added and registered in CMake, but it has **not yet been successfully executed or verified on PS5**. The encrypted vault is **not connected to production PS5 authentication**. The PS5 entry point instead uses RAM-only sessions; the legacy `session.v1` format remains plaintext where the old class is used.
 
 An isolated `SecureSessionRepository` has also been added at
 `src/steam/secure_session_repository.{h,cpp}`. It writes a new `session.v2`
