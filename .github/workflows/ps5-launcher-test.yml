@@ -32,6 +32,7 @@ jobs:
       - name: Build launcher-only test payload
         env:
           Z3CLOUDPLAY_NATIVE_RUNTIME_ACCESS: "OFF"
+          Z3CLOUDPLAY_EXPERIMENTAL_ARCHIVE_REBUILD: "ON"
           Z3CLOUDPLAY_LAPY_HELPER_ELF: ""
           Z3CLOUDPLAY_LAPY_HELPER_MANIFEST: ""
           Z3CLOUDPLAY_UI_SIMULATION: "OFF"
