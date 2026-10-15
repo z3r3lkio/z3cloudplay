@@ -41,6 +41,7 @@
 #include <atomic>
 #include <cstdio>
 #include <cstdlib>
+#include <cerrno>
 #include <vector>
 #include <string>
 #include <cstring>
@@ -252,7 +253,8 @@ int main() {
         });
         // Legacy plaintext tokens must not survive into this session.
         z3cloudplay::Storage credential_cleanup(paths.steam_state_root);
-        if (!credential_cleanup.EnsureRootDirectory().ok()) {
+        // Parent directory is prepared by native startup; ensure the leaf exists.
+        if (::mkdir(paths.steam_state_root.c_str(), 0700) != 0 && errno != EEXIST) {
             z3cloudplay::app::AppendLogLine(log_root, "storage.log",
                 "private credential directory unavailable; authentication disabled");
             return 1;
