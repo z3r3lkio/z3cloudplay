@@ -52,6 +52,10 @@ See the [compatibility list](COMPATIBILITY.md) for the games we have tested.
 - Support for game launches (Rockstar, EA, Ubisoft)
 - Community recipes in the preset chooser
 
+## Current security policy
+
+On PS5, z3cloudplay uses an in-memory Steam session and requires QR sign-in after every application restart. The application attempts to remove legacy plaintext session files on startup. The AES-256-GCM encrypted persistent vault is under development and **is not active in the PS5 application**. This codebase has not yet been verified by a native PS5 build or console test. See [security status](SECURITY.md) and [credential migration policy](docs/credential-migration.md).
+
 ## Before you use it
 
 Z3CloudPlay is alpha software. It is not affiliated with, endorsed by, or supported by Valve. Know these points before
