@@ -184,6 +184,16 @@ add_custom_command(OUTPUT "${z3cloudplay_staged_ca}"
     DEPENDS "${Z3CLOUDPLAY_STEAM_CA_BUNDLE}" VERBATIM)
 add_custom_target(z3cloudplay_steam_trust ALL DEPENDS "${z3cloudplay_staged_ca}")
 
+# The secure vault is isolated until the PS5 passphrase UI is available.
+add_library(z3cloudplay_secure_session_vault STATIC
+    "${CMAKE_SOURCE_DIR}/src/steam/secure_session_vault.cpp")
+target_compile_features(z3cloudplay_secure_session_vault PUBLIC cxx_std_17)
+target_include_directories(z3cloudplay_secure_session_vault PUBLIC
+    "${CMAKE_SOURCE_DIR}/src"
+    "${Z3CLOUDPLAY_STEAM_PREFIX}/include")
+target_link_libraries(z3cloudplay_secure_session_vault PUBLIC
+    "${Z3CLOUDPLAY_STEAM_PREFIX}/lib/libmbedcrypto.a")
+
 function(z3cloudplay_register_steam_backend_tests)
     if(NOT BUILD_TESTING OR Z3CLOUDPLAY_PLATFORM_PS5)
         return()
@@ -202,6 +212,10 @@ function(z3cloudplay_register_steam_backend_tests)
         target_link_libraries(${test_name}_test PRIVATE z3cloudplay_steam_protocol)
         add_test(NAME ${test_name} COMMAND ${test_name}_test)
     endforeach()
+
+    add_executable(secure_session_vault_test "${CMAKE_SOURCE_DIR}/tests/secure_session_vault_test.cpp")
+    target_link_libraries(secure_session_vault_test PRIVATE z3cloudplay_secure_session_vault)
+    add_test(NAME secure_session_vault COMMAND secure_session_vault_test)
 
     foreach(test_name session_store steam_auth)
         add_executable(${test_name}_test "${CMAKE_SOURCE_DIR}/tests/${test_name}_test.cpp")
