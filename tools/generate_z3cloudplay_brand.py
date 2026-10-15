@@ -47,3 +47,11 @@ for relative,size in [
     target.parent.mkdir(parents=True,exist_ok=True)
     asset(size).save(target,optimize=True)
     print(relative)
+
+# Validate the existing DDS backgrounds before attempting any rebranding of
+# native texture data; image payloads are not rewritten without format checks.
+for p in ("sce_sys/pic0.dds", "sce_sys/pic1.dds"):
+    path=ROOT/p
+    blob=path.read_bytes()
+    fmt=int.from_bytes(blob[128:132],"little") if len(blob)>=148 else -1
+    print(f"{p}: bytes={len(blob)}, magic={blob[:4]!r}, dxgi_format={fmt}")
