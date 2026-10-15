@@ -4,6 +4,12 @@
 
 The imported authentication implementation currently persists Steam refresh and access tokens in cleartext in `src/steam/session_store.cpp` as `session.v1`. File permissions and checksums do not provide encryption. The repository's new name does not change this risk.
 
+## Implementation progress (October 15, 2026)
+
+A standalone vault has been added under `src/steam/secure_session_vault.{h,cpp}`, with AES-256-GCM, randomly generated salts and nonces, PBKDF2-HMAC-SHA256 (600,000 rounds), authenticated metadata, and generic error responses. A standalone test was added and registered in CMake, but it has **not yet been successfully executed or verified on PS5**. The vault is **not connected to Steam session persistence**. The existing `session.v1` remains plaintext.
+
+The KDF uses PBKDF2 as a compatibility implementation, **not Argon2id**. This is a staged change, not a security release.
+
 ## Required changes before a security release
 
 1. Introduce a versioned authenticated-encryption container (AES-256-GCM) with a random nonce, authenticated metadata and full verification before parsing.
