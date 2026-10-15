@@ -31,6 +31,8 @@ class Controller {
   // Microseconds each part of the last Tick took, for slow-frame diagnostics.
   std::string LastTickProfile() const;
   void Shutdown();
+  // Reattempt restoration once the session vault has been unlocked.
+  void RestoreAfterUnlock();
   // Steam store descriptions, genres and controller support for the games the player opens.
   void SetStoreDetails(steam::StoreDetailsService* store_details) { store_details_ = store_details; }
   Controller(const Controller&) = delete;
