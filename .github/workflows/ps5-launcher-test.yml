@@ -1,4 +1,4 @@
-name: PS5 launcher test build
+name: PS5 runtime-enabled test build
 on:
   workflow_dispatch:
   push:
@@ -11,6 +11,7 @@ on:
       - 'src/homebrew/ps5.cpp'
       - 'src/homebrew/controller.cpp'
       - 'src/homebrew/controller.hpp'
+      - 'src/steam/backend/depot_installer.h'
       - 'scripts/build-homebrew-ps5.sh'
       - '.github/workflows/ps5-launcher-test.yml'
 permissions:
@@ -33,12 +34,12 @@ jobs:
           echo "$(brew --prefix llvm@18)/bin" >> "$GITHUB_PATH"
       - name: Fetch verified PS5 SDK and dependencies
         run: bash scripts/fetch-deps.sh
-      - name: Build launcher-only test payload
+      - name: Build title-scoped runtime helper
+        run: bash scripts/build-lapy-helper.sh FAKE77031
+      - name: Build runtime-enabled test payload
         env:
-          Z3CLOUDPLAY_NATIVE_RUNTIME_ACCESS: "OFF"
+          Z3CLOUDPLAY_NATIVE_RUNTIME_ACCESS: "ON"
           Z3CLOUDPLAY_EXPERIMENTAL_ARCHIVE_REBUILD: "ON"
-          Z3CLOUDPLAY_LAPY_HELPER_ELF: ""
-          Z3CLOUDPLAY_LAPY_HELPER_MANIFEST: ""
           Z3CLOUDPLAY_UI_SIMULATION: "OFF"
           LLVM_CONFIG: /opt/homebrew/opt/llvm@18/bin/llvm-config
         run: bash scripts/build-homebrew-ps5.sh
@@ -60,10 +61,10 @@ jobs:
       - name: Archive PS5 homebrew folder
         run: |
           cd build/homebrew-ps5/dist
-          zip -qr "$GITHUB_WORKSPACE/z3cloudplay-ps5-launcher-test.zip" FAKE77031
+          zip -qr "$GITHUB_WORKSPACE/z3cloudplay-ps5-runtime-test.zip" FAKE77031
       - uses: actions/upload-artifact@v4
         with:
-          name: z3cloudplay-ps5-launcher-test
+          name: z3cloudplay-ps5-runtime-test
           path: z3cloudplay-ps5-launcher-test.zip
           if-no-files-found: error
           retention-days: 7
