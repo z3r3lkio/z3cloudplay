@@ -1,0 +1,53 @@
+name: PS5 launcher test build
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/persistent-encrypted-sessions
+    paths:
+      - 'cmake/HomebrewPS5.cmake'
+      - 'CMakeLists.txt'
+      - 'src/homebrew/ps5.cpp'
+      - '.github/workflows/ps5-launcher-test.yml'
+permissions:
+  contents: read
+jobs:
+  ps5-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Install native build prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build clang-18 llvm-18-dev libclang-18-dev \
+            build-essential python3 python3-pil python3-venv pkg-config \
+            curl unzip zstd libssl-dev libzstd-dev libsdl2-dev autoconf automake libtool
+      - name: Fetch verified PS5 SDK and dependencies
+        run: bash scripts/fetch-deps.sh
+      - name: Build launcher-only test payload
+        env:
+          Z3CLOUDPLAY_NATIVE_RUNTIME_ACCESS: "OFF"
+          Z3CLOUDPLAY_LAPY_HELPER_ELF: ""
+          Z3CLOUDPLAY_LAPY_HELPER_MANIFEST: ""
+          Z3CLOUDPLAY_UI_SIMULATION: "OFF"
+          LLVM_CONFIG: /usr/bin/llvm-config-18
+        run: bash scripts/build-homebrew-ps5.sh
+      - name: Verify signed executable exists
+        run: |
+          test -s build/homebrew-ps5/dist/FAKE77031/eboot.bin
+          test -s build/homebrew-ps5/dist/FAKE77031/sce_sys/param.json
+          test -s build/homebrew-ps5/dist/FAKE77031/z3cloudplay-package.identity
+          sha256sum build/homebrew-ps5/dist/FAKE77031/eboot.bin
+      - name: Archive PS5 homebrew folder
+        run: |
+          cd build/homebrew-ps5/dist
+          zip -qr "$GITHUB_WORKSPACE/z3cloudplay-ps5-launcher-test.zip" FAKE77031
+      - uses: actions/upload-artifact@v4
+        with:
+          name: z3cloudplay-ps5-launcher-test
+          path: z3cloudplay-ps5-launcher-test.zip
+          if-no-files-found: error
+          retention-days: 7
