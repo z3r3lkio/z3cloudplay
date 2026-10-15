@@ -496,6 +496,11 @@ public:
     bool action(const std::string& logical_action);
     void controller_sample(ControllerState sample);
     void text(const std::string& utf8);
+    // Secure editor API; no passphrase is included in ViewModel subtitles.
+    // The caller must erase the returned secret as soon as it is consumed.
+    void BeginSecurePassphraseEntry();
+    [[nodiscard]] std::optional<std::string> TakeSecurePassphrase();
+
     void tick(int ticks = 1);
     void SetControllerConnected(bool connected);
     void SetWallClock(std::int64_t unix_seconds);
@@ -631,6 +636,7 @@ private:
     mutable std::map<GameId, z3cloudplay::runtime::GameRecipe> simulated_recipes_;
     z3cloudplay::runtime::KitCapabilities kit_;
     std::set<std::string> expanded_settings_sections_;
+    std::optional<std::string> completed_secure_passphrase_;
     std::string editing_setting_id_;
     bool editing_append_ = false;  // the editor adds one library override to the list
     std::map<GameId, LiveGameSetup> game_setups_;
