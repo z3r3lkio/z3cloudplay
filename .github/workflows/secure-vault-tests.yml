@@ -53,5 +53,7 @@ jobs:
           assert 'BeginSecurePassphraseEntry()' in model
           print("Passphrase masking checks passed")
           PY
+      - name: Compile-check secure PS5 state machine
+        run: g++ -std=c++20 -fsyntax-only -Isrc -Ithird_party -Ithird_party/utf8proc src/homebrew/simulation.cpp src/homebrew/controller.cpp
       - name: Run vault security tests
         run: /tmp/z3cloudplay-secure-vault-test
