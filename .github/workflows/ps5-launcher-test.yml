@@ -7,6 +7,7 @@ on:
     paths:
       - 'cmake/HomebrewPS5.cmake'
       - 'CMakeLists.txt'
+      - 'cmake/PackagePS5.cmake'
       - 'src/homebrew/ps5.cpp'
       - 'scripts/build-homebrew-ps5.sh'
       - '.github/workflows/ps5-launcher-test.yml'
@@ -43,6 +44,15 @@ jobs:
         run: |
           test -s build/homebrew-ps5/dist/FAKE77031/eboot.bin
           test -s build/homebrew-ps5/dist/FAKE77031/sce_sys/param.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("build/homebrew-ps5/dist/FAKE77031/sce_sys/param.json").read_text())
+          assert p["titleId"]=="FAKE77031"
+          assert p["contentId"]=="UP9000-FAKE77031_00-Z3CLOUDPLAY00001"
+          assert len(p["contentId"])==36
+          print("PS5 registration metadata validated")
+          PY
           test -s build/homebrew-ps5/dist/FAKE77031/z3cloudplay-package.identity
           shasum -a 256 build/homebrew-ps5/dist/FAKE77031/eboot.bin
       - name: Archive PS5 homebrew folder
