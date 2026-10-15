@@ -63,9 +63,10 @@ you sign in:
 
 - **It is an unofficial Steam client.** Z3CloudPlay talks to Steam's servers directly, the way the Steam client does. Valve
   does not support third-party clients. We know of no account problems from this, but the risk is yours to accept.
-- **Your Steam session stays on the console.** Z3CloudPlay stores a Steam sign-in token on the PS5, **without encryption**.
-  On a jailbroken console, anyone with file access (for example through FTP) can read it. Signing out in Z3CloudPlay
-  deletes the token from the console.
+- **Steam session security.** The current PS5 entry point retains credentials only in process memory;
+  a new QR login is needed after restart. Legacy plaintext `session.v1` files are removed at startup where possible.
+  The encrypted `session.v2` and protected unlock flow remain under validation in a separate development branch.
+  Elevated processes on a jailbroken console may still read active session credentials.
 - **It writes to your Steam Cloud saves.** Z3CloudPlay uploads saves after you play. A bug can overwrite good saves with
   older or broken ones. Back up saves you care about. When Z3CloudPlay shows a conflict, read it before you choose.
 - **It needs a jailbroken console with root-level helpers.** A running game can get elevated rights on the console.
