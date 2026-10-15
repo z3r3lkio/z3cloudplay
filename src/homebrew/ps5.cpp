@@ -443,7 +443,7 @@ int main() {
                 z3cloudplay::app::AppendLogLine(paths.log_root, "runtime.log", "runtime worker could not start");
         }
         z3cloudplay::homebrew::Controller services(simulation, auth, sessions,&library_service,&persistence,&app_details,&installs,&cloud,
-                                               runtime_host.get());
+                                               runtime_host.get(), true);
         z3cloudplay::steam::StoreDetailsService store_details(z3cloudplay::homebrew::StoreFetch(paths.trust_store));
         services.SetStoreDetails(&store_details);
         simulation.BeginSecurePassphraseEntry();
