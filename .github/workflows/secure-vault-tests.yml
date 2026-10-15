@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - 'src/steam/secure_session_vault.*'
+      - 'src/steam/secure_session_repository.*'
+      - 'tests/secure_session_repository_test.cpp'
       - 'tests/secure_session_vault_test.cpp'
       - '.github/workflows/secure-vault-tests.yml'
   workflow_dispatch:
@@ -21,5 +23,14 @@ jobs:
           g++ -std=c++17 -O2 -Wall -Wextra -Werror -I src \
             src/steam/secure_session_vault.cpp tests/secure_session_vault_test.cpp \
             -lmbedcrypto -o /tmp/z3cloudplay-secure-vault-test
+      - name: Compile encrypted repository integration test
+        run: |
+          g++ -std=c++17 -O2 -Wall -Wextra -Werror -I src \
+            src/platform/storage.cpp src/steam/secure_session_vault.cpp \
+            src/steam/secure_session_repository.cpp \
+            tests/secure_session_repository_test.cpp -lmbedcrypto \
+            -o /tmp/z3cloudplay-secure-repository-test
+      - name: Run encrypted repository integration test
+        run: /tmp/z3cloudplay-secure-repository-test
       - name: Run vault security tests
         run: /tmp/z3cloudplay-secure-vault-test
