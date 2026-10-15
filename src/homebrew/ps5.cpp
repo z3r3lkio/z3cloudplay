@@ -28,6 +28,7 @@
 #include "steam/backend/steam_cloud_runner.h"
 #include "steam/backend/library_client.h"
 #include "steam/local_session_repository.h"
+#include "steam/ephemeral_session_repository.h"
 #include "library/cache.h"
 #include "platform/ps5/display_egl.hpp"
 #include "platform/ps5/pad.hpp"
@@ -246,11 +247,9 @@ int main() {
             z3cloudplay::app::AppendLogLine(log_root, "auth.log", std::string("restored path=") + path + " before " + before +
                 " after " + after);
         });
-        z3cloudplay::LocalSessionRepository sessions(paths.steam_state_root, [](const std::string& diagnostic) {
-            z3cloudplay::app::AppendLogLine(log_root, "storage.log", diagnostic);
-        });
+        z3cloudplay::security::EphemeralSessionRepository sessions;
         z3cloudplay::steam::LibraryClient owned_library(paths.trust_store);
-        z3cloudplay::LocalSessionRepository library_sessions(paths.steam_state_root);
+        auto& library_sessions = sessions;
         z3cloudplay::Storage library_storage(paths.steam_state_root);
         z3cloudplay::steam::CmClient cm_client(paths.trust_store, library_storage);
         cm_client.SetOwner("library");
@@ -265,7 +264,7 @@ int main() {
         details_cm.SetOwner("details");
         details_cm.SetSharedSession(steam_cm);
         z3cloudplay::steam::CmAppDetailsSource details_source(details_cm);
-        z3cloudplay::LocalSessionRepository details_sessions(paths.steam_state_root);
+        auto& details_sessions = sessions;
         z3cloudplay::steam::AppDetailsService app_details(details_source, details_sessions);
         z3cloudplay::steam::CmClient install_cm(paths.trust_store, library_storage);
         install_cm.SetOwner("install");
@@ -283,7 +282,7 @@ int main() {
                 std::snprintf(line, sizeof(line), "app=%u step=%s result=%s detail=%s", app, step, category, detail);
             z3cloudplay::app::AppendLogLine(log_root, "install.log", line);
         });
-        z3cloudplay::LocalSessionRepository install_sessions(paths.steam_state_root);
+        auto& install_sessions = sessions;
         z3cloudplay::steam::InstallService installs(install_runner, install_sessions,
             z3cloudplay::steam::DiscoverInstallVolumes(z3cloudplay::steam::ConsoleVolumeCandidates(paths.title_root)));
         z3cloudplay::steam::CmClient cloud_cm(paths.trust_store, library_storage);
@@ -294,7 +293,7 @@ int main() {
         cloud_runner.SetLog([](z3cloudplay::GameId app, const char* event, const std::string& message) {
             z3cloudplay::app::AppendLogLine(log_root, "cloud.log", "app=" + std::to_string(app) + " event=" + event + " " + message);
         });
-        z3cloudplay::LocalSessionRepository cloud_sessions(paths.steam_state_root);
+        auto& cloud_sessions = sessions;
         z3cloudplay::steam::CloudService cloud(cloud_runner, cloud_sessions);
         simulation.SetLogDirectory(paths.log_root);
         // "Export as recipe" writes next to the logs, which are read over FTP already.
