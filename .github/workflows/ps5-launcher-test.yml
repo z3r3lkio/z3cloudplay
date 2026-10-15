@@ -65,6 +65,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: z3cloudplay-ps5-runtime-test
-          path: z3cloudplay-ps5-launcher-test.zip
+          path: z3cloudplay-ps5-runtime-test.zip
           if-no-files-found: error
           retention-days: 7
