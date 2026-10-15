@@ -11,6 +11,7 @@ on:
       - 'src/homebrew/ps5.cpp'
       - 'src/homebrew/view.cpp'
       - 'src/homebrew/simulation.cpp'
+      - 'src/homebrew/simulation.hpp'
       - '.github/workflows/secure-vault-tests.yml'
   workflow_dispatch:
 permissions:
@@ -48,6 +49,8 @@ jobs:
           assert 'secret_entry = state.editor.purpose == "Secure Session Passphrase"' in view
           assert 'painter.field(field, display_value, false' in view
           assert 'view_.subtitle = state_.editor.purpose == "Secure Session Passphrase"' in model
+          assert 'completed_secure_passphrase_ = std::move(state_.editor.value)' in model
+          assert 'BeginSecurePassphraseEntry()' in model
           print("Passphrase masking checks passed")
           PY
       - name: Run vault security tests
