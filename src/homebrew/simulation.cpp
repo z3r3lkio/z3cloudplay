@@ -3526,6 +3526,19 @@ std::string Simulation::next_job_id() {
     }
 }
 
+void Simulation::BeginSecurePassphraseEntry() {
+    if (state_.editor.active) return;
+    completed_secure_passphrase_.reset();
+    start_editor("Secure Session Passphrase", {});
+    rebuild_view();
+}
+
+std::optional<std::string> Simulation::TakeSecurePassphrase() {
+    auto answer = std::move(completed_secure_passphrase_);
+    completed_secure_passphrase_.reset();
+    return answer;
+}
+
 void Simulation::start_editor(std::string purpose, std::string value) {
     const auto opener = state_.navigation.focus_key;
     editing_setting_id_.clear();
@@ -3541,6 +3554,20 @@ void Simulation::start_editor(std::string purpose, std::string value) {
 }
 
 void Simulation::commit_editor() {
+    if (state_.editor.purpose == "Secure Session Passphrase") {
+        if (state_.editor.value.size() < 12 || state_.editor.value.size() > 1024) {
+            state_.notices.push_back({"vault-passphrase-length",
+                                     "Passphrase must be between 12 and 1024 characters",
+                                     "", true, 0, true});
+            return;
+        }
+        completed_secure_passphrase_ = std::move(state_.editor.value);
+        state_.editor.value.clear();
+        state_.editor.original.clear();
+        state_.editor.active = false;
+        state_.navigation.focus_key = state_.editor.opener_focus_key;
+        return;
+    }
     if (state_.editor.purpose == "Search") { state_.library.query = state_.editor.value; reconcile_library_selection(state_); }
     else if (!editing_setting_id_.empty()) {
         if (!can_change_game_settings()) return;
@@ -3623,7 +3650,18 @@ void Simulation::cancel() {
         state_.navigation.settings_rail_focused = false;
         return;
     }
-    if (state_.editor.active) { state_.editor.active = false; state_.navigation.focus_key = state_.editor.opener_focus_key; return; }
+    if (state_.editor.active) {
+        if (state_.editor.purpose == "Secure Session Passphrase") {
+            std::fill(state_.editor.value.begin(), state_.editor.value.end(), '\\0');
+            std::fill(state_.editor.original.begin(), state_.editor.original.end(), '\\0');
+            state_.editor.value.clear();
+            state_.editor.original.clear();
+            completed_secure_passphrase_.reset();
+        }
+        state_.editor.active = false;
+        state_.navigation.focus_key = state_.editor.opener_focus_key;
+        return;
+    }
     // An applied search is undone before Circle leaves the Library.
     if (state_.navigation.route == Route::Library && state_.navigation.modals.empty() && !state_.library.query.empty()) {
         state_.library.query.clear();
