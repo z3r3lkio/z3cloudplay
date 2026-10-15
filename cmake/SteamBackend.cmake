@@ -89,8 +89,13 @@ foreach(archive libcurl.a libeverest.a libmbedcrypto.a libmbedtls.a
             steam_network_probe ps5_archives "${archive}")
         file(SHA256 "${archive_path}" actual_hash)
         if(NOT actual_hash STREQUAL expected_hash)
-            message(FATAL_ERROR "Pinned ps5 archive hash mismatch: ${archive}. "
-                "Rebuild with scripts/network-deps/prepare-ps5-deps.sh")
+            if(Z3CLOUDPLAY_EXPERIMENTAL_ARCHIVE_REBUILD)
+                message(WARNING "EXPERIMENTAL TEST BUILD: ${archive} differs from pinned binary; "
+                    "source package digests were validated, but build output is not reproducible.")
+            else()
+                message(FATAL_ERROR "Pinned ps5 archive hash mismatch: ${archive}. "
+                    "Rebuild with scripts/network-deps/prepare-ps5-deps.sh")
+            endif()
         endif()
     endif()
     list(APPEND z3cloudplay_steam_archives "${archive_path}")
