@@ -25,7 +25,8 @@ class Controller {
   Controller(Simulation& model, steam::AuthBackend& backend, SessionRepository& repository,
              LibraryService* library_service = nullptr, app::PersistenceService* persistence_service = nullptr,
              steam::AppDetailsService* app_details = nullptr, steam::InstallService* installs = nullptr,
-             steam::CloudService* cloud = nullptr, RuntimeHost* runtime = nullptr);
+             steam::CloudService* cloud = nullptr, RuntimeHost* runtime = nullptr,
+             bool defer_initial_restore = false);
   ~Controller();
   void Tick();
   // Microseconds each part of the last Tick took, for slow-frame diagnostics.
