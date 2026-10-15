@@ -15,7 +15,7 @@
 
 #include <mbedtls/aes.h>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 
 namespace fs = std::filesystem;
@@ -753,7 +753,7 @@ std::optional<std::uint64_t> RegularSize(const fs::path& path) {
 
 // Writes bytes to path through a temporary file in the same folder, synced, then renamed.
 bool WriteAtomic(const fs::path& path, const std::string& bytes, mode_t mode) {
-  const auto temporary = path.parent_path() / (".playden-" + path.filename().string() + ".tmp");
+  const auto temporary = path.parent_path() / (".z3cloudplay-" + path.filename().string() + ".tmp");
   ::unlink(temporary.c_str());
   const int file = ::open(temporary.c_str(), O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, mode);
   if (file < 0) return false;
@@ -889,26 +889,26 @@ SteamStubResult UnpackSteamStubPrograms(const std::string& install_root, const s
     }
     result.found.push_back(relative);
     if (info.kind == SteamStubKind::kUnsupported)
-      return fail("This game's program has Steam DRM in a form Playden can't unpack yet.");
+      return fail("This game's program has Steam DRM in a form Z3CloudPlay can't unpack yet.");
     std::string bytes;
     mode_t mode = 0755;
     const auto read = ReadFile(path, kSteamStubMaxProgramBytes, &bytes, &mode);
-    if (read == ReadStatus::kTooLarge) return fail("The game's program " + relative + " is too large for Playden to unpack.");
-    if (read != ReadStatus::kOk) return fail("Playden could not read the game's " + relative + ".");
+    if (read == ReadStatus::kTooLarge) return fail("The game's program " + relative + " is too large for Z3CloudPlay to unpack.");
+    if (read != ReadStatus::kOk) return fail("Z3CloudPlay could not read the game's " + relative + ".");
     // A first unpack, or a newer wrapped program from a game update: keep it first.
     bool kept = false;
     if (RegularSize(orig) == bytes.size()) {
       std::string previous;
       kept = ReadFile(orig, kSteamStubMaxProgramBytes, &previous) == ReadStatus::kOk && previous == bytes;
     }
-    if (!kept && !WriteAtomic(orig, bytes, mode)) return fail("Playden could not keep a copy of the game's " + relative + ".");
+    if (!kept && !WriteAtomic(orig, bytes, mode)) return fail("Z3CloudPlay could not keep a copy of the game's " + relative + ".");
     std::string why;
-    if (!UnpackSteamStub(&bytes, &why)) return fail("Playden could not unpack the game's " + relative + ".");
-    if (!WriteAtomic(path, bytes, mode)) return fail("Playden could not write the game's unpacked " + relative + ".");
+    if (!UnpackSteamStub(&bytes, &why)) return fail("Z3CloudPlay could not unpack the game's " + relative + ".");
+    if (!WriteAtomic(path, bytes, mode)) return fail("Z3CloudPlay could not write the game's unpacked " + relative + ".");
     result.changed.push_back(relative);
   }
   result.ok = true;
   return result;
 }
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

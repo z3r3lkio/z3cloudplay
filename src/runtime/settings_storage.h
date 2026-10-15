@@ -2,7 +2,7 @@
 #include <filesystem>
 #include <optional>
 #include <string>
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 // Select an existing absolute, normalized app-state root (or one whose parent
 // exists). Keep its public mode, create a private settings child, import the
 // legacy owned file once, and validate the selected record before enabling

@@ -2,7 +2,7 @@
 #include "platform/managed_directory.h"
 #include <cerrno>
 #include <cstring>
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace fs = std::filesystem;
 namespace {
 using platform::DirectoryPolicy;

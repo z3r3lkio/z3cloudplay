@@ -10,14 +10,14 @@
 #include <string_view>
 #include <vector>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 // Per-game settings: the catalogue the settings sheet is drawn from, the recipe and preset
 // data that supply defaults, and the effective values that become the prospero profile and
 // dxvk.conf.
 //
 // Resolution order for each setting:
-//   Playden default -> recipe default -> preset -> player override,
+//   Z3CloudPlay default -> recipe default -> preset -> player override,
 // except that a setting the recipe locks keeps the recipe value until the player chooses
 // "Change anyway" (an "unlock.<id>" entry in the overrides). An absent override means
 // "inherit"; an explicit value, including "off" or an empty text, is never treated as absent.
@@ -28,14 +28,14 @@ namespace playden::runtime {
 enum class SettingTier { kBasic, kCompatibility, kAdvanced };
 enum class ApplyMode { kNextLaunch, kGameClosed, kPreparesBottle };
 enum class SettingKind { kChoice, kText };
-enum class ValueSource { kPlayden, kRecipe, kPreset, kUser };
+enum class ValueSource { kZ3CloudPlay, kRecipe, kPreset, kUser };
 
 // What the runtime kit can apply beyond the prospero profile.
 struct KitCapabilities {
   bool dxvk_config = false;   // dxvk.conf in the game folder is read (roadmap step S0)
   bool dxvk_present = false;  // the display honors DXVK's present interval (VSync off)
   bool environment = false;  // prospero-win [environment] section (upstream U1, not released)
-  bool registry = false;     // Playden can edit the stopped bottle's user.reg (decision D2)
+  bool registry = false;     // Z3CloudPlay can edit the stopped bottle's user.reg (decision D2)
   bool input_tuning = false;  // prospero-win [input] stick_deadzone, rumble, trigger_deadzone (U4, not released)
   bool input_wheel = false;   // prospero-win [input] wheel, with Wine patch 0745 (U4, not built yet)
   bool audio_volume = false;  // prospero-win [audio] volume (U4, not released)
@@ -62,14 +62,14 @@ struct SettingDefinition {
   ApplyMode apply = ApplyMode::kNextLaunch;
   SettingKind kind = SettingKind::kChoice;
   std::vector<SettingChoice> choices;  // empty for text and for launch_option (from the recipe)
-  std::string playden_default;         // empty means "not written"
+  std::string z3cloudplay_default;         // empty means "not written"
 };
 
 const std::vector<SettingDefinition>& SettingsCatalogue();
 const SettingDefinition* FindSetting(std::string_view id);
 
 // Whether the sheet lists a setting at all. Every setting is listed, so players see what is
-// coming; one the kit, the game or Playden cannot apply yet is disabled with its reason
+// coming; one the kit, the game or Z3CloudPlay cannot apply yet is disabled with its reason
 // (EffectiveValue::available). Button rows live under Button mapping.
 bool SettingShown(const SettingDefinition& definition, const KitCapabilities& kit);
 
@@ -114,9 +114,9 @@ struct SettingsPreset {
   std::map<std::string, std::string> settings;  // only the settings it changes
 };
 
-// What Playden persists per game.
+// What Z3CloudPlay persists per game.
 struct GameSettingsRecord {
-  std::string preset_id;  // empty = Playden default
+  std::string preset_id;  // empty = Z3CloudPlay default
   std::map<std::string, std::string> overrides;
   std::uint64_t revision = 0;
 };
@@ -128,7 +128,7 @@ inline bool operator!=(const GameSettingsRecord& left, const GameSettingsRecord&
 
 struct EffectiveValue {
   std::string value;  // empty = not written
-  ValueSource source = ValueSource::kPlayden;
+  ValueSource source = ValueSource::kZ3CloudPlay;
   bool locked = false;
   bool unlocked = false;   // locked by the recipe, but the player chose "Change anyway"
   bool available = true;   // false: the row is disabled and the value is not applied
@@ -190,8 +190,8 @@ bool RenderProsperoProfile(const GameRecipe& recipe, const EffectiveSettings& se
 std::string RenderDxvkConfig(const EffectiveSettings& settings);
 
 // Writes what the next launch reads: <prospero_root>/profiles/<id>.profile (listed in
-// profiles.lst) and <install_root>/dxvk.conf. An empty config removes Playden's dxvk.conf.
-// A dxvk.conf Playden did not write (no Playden header) is never replaced or removed; the
+// profiles.lst) and <install_root>/dxvk.conf. An empty config removes Z3CloudPlay's dxvk.conf.
+// A dxvk.conf Z3CloudPlay did not write (no Z3CloudPlay header) is never replaced or removed; the
 // call fails with a reason instead. Call only while the game is not running.
 bool ApplyGameSettings(const GameRecipe& recipe, const EffectiveSettings& settings, const ProfileTarget& target,
                        const std::string& prospero_root, std::string* reason);
@@ -264,7 +264,7 @@ std::string SerializeGameSettingsRecord(const GameSettingsRecord& record);
 // nothing else. Missing cache is success. Call only while the game is not running.
 bool ClearShaderCache(const LaunchEntry& launch, const std::string& install_root, std::string* reason);
 
-// One value Playden owns in the bottle's user.reg (HKEY_CURRENT_USER). An empty data
+// One value Z3CloudPlay owns in the bottle's user.reg (HKEY_CURRENT_USER). An empty data
 // removes the value, so the game inherits Wine's default again.
 struct RegistryValue {
   std::string key;   // e.g. Software\Wine\AppDefaults\hl2.exe (single backslashes)
@@ -277,18 +277,18 @@ struct RegistryValue {
 // edit the bottle.
 std::vector<RegistryValue> RenderRegistryValues(const EffectiveSettings& settings);
 
-// Applies values to Wine's user.reg text, keeping every other line. Sections Playden adds
+// Applies values to Wine's user.reg text, keeping every other line. Sections Z3CloudPlay adds
 // carry the given Unix time. Returns false for text that is not a Wine registry file.
 bool ApplyRegistryValues(std::string* user_reg, const std::vector<RegistryValue>& values, std::int64_t unix_time,
                          std::string* reason);
 
-// Edits <prefix>/user.reg in place: copies it to user.reg.playden-backup first, then replaces
+// Edits <prefix>/user.reg in place: copies it to user.reg.z3cloudplay-backup first, then replaces
 // it atomically. Call only while the bottle is stopped (no wineserver).
 bool ApplyRegistrySettings(const EffectiveSettings& settings, const std::string& prefix_dir, std::int64_t unix_time,
                            std::string* reason);
 
 // Applies values to one hive of the stopped bottle (user.reg or system.reg) the same way:
-// backed up to <hive>.playden-backup first, replaced atomically, untouched when nothing changes.
+// backed up to <hive>.z3cloudplay-backup first, replaced atomically, untouched when nothing changes.
 bool ApplyBottleRegistryValues(const std::vector<RegistryValue>& values, const std::string& prefix_dir,
                                std::int64_t unix_time, const std::string& hive, std::string* reason);
 
@@ -324,7 +324,7 @@ struct CommunityPreset {
 bool ParseProfileSidecar(std::string_view json, CommunityPreset* community, std::string* reason);
 
 // A game's effective settings in the community recipe format (docs/community-recipes.md):
-// a Playden recipe that ParseGameRecipe reads, plus who tested it where.
+// a Z3CloudPlay recipe that ParseGameRecipe reads, plus who tested it where.
 struct CommunityRecipe {
   GameRecipe recipe;  // id community-<app id>; the effective program, arguments, overrides and settings
   std::string executable;       // identity: the program, relative to the install root
@@ -334,12 +334,12 @@ struct CommunityRecipe {
   std::string status;           // works, playable, broken or untested
   std::string notes;
   std::string author;
-  // Optional prospero-win-profiles profile used as the base; Playden's values apply on top.
+  // Optional prospero-win-profiles profile used as the base; Z3CloudPlay's values apply on top.
   std::string base_repository;
   std::string base_path;
   std::string base_revision;
 };
-// The recipe the effective settings describe. Only values that differ from Playden's default
+// The recipe the effective settings describe. Only values that differ from Z3CloudPlay's default
 // and rows the runtime applies become defaults; rows the recipe locks stay locked unless the
 // player changed them anyway.
 CommunityRecipe BuildCommunityRecipe(const GameRecipe& recipe, const EffectiveSettings& settings);
@@ -367,7 +367,7 @@ inline constexpr const char* kKitAudioVolume = "settings-audio-volume";      // 
 // Runtime ability (not a setting): games with a shared section, such as GameMaker's, can start.
 inline constexpr const char* kKitSharedSections = "wine-shared-sections";
 // Runtime ability: the kit carries one title shell for every game (an any-title variant), so
-// Playden makes a new PS5 title per game instead of using a fixed set of titles.
+// Z3CloudPlay makes a new PS5 title per game instead of using a fixed set of titles.
 inline constexpr const char* kKitTitleAnyId = "title-any-id";
 // Runtime ability: launch admission accepts a game folder on a drive that records no file
 // owners or permissions, such as an exFAT USB disk (publication metadata schema 3).
@@ -395,14 +395,14 @@ struct SettingsLaunchPlan {
   std::string launch_entry_id;
   // Input preset files the profile references ([input] preset), as <name>.input and bytes.
   std::vector<std::pair<std::string, std::string>> input_presets;
-  std::string dxvk_config;               // empty: no Playden dxvk.conf (an old one is removed)
+  std::string dxvk_config;               // empty: no Z3CloudPlay dxvk.conf (an old one is removed)
   std::vector<RegistryValue> registry;   // empty unless the kit has bottle access
   LaunchEntry launch_entry;             // owned snapshot; recipe reloads cannot change the plan
 };
 
 struct SettingsLaunchInput {
   const GameRecipe* recipe = nullptr;
-  const SettingsPreset* preset = nullptr;  // exact record preset; empty record accepts null or empty playden-default
+  const SettingsPreset* preset = nullptr;  // exact record preset; empty record accepts null or empty z3cloudplay-default
   GameSettingsRecord record;
   KitCapabilities kit;
   ProfileTarget target;     // profile id and console path of the game files
@@ -414,7 +414,7 @@ struct SettingsLaunchInput {
 bool BuildSettingsLaunchPlan(const SettingsLaunchInput& input, SettingsLaunchPlan* plan, std::string* reason);
 
 // Writes the plan's game-folder and bottle files: dxvk.conf in the launch working folder
-// (never replacing one Playden did not write) and the registry values in <prefix_dir>/user.reg
+// (never replacing one Z3CloudPlay did not write) and the registry values in <prefix_dir>/user.reg
 // (with a backup). If the registry edit fails, dxvk.conf is put back; should that rewrite itself
 // fail, the folder keeps the new dxvk.conf and the call still returns false. The profile is not written here: the integration publishes profile_bytes
 // through its journaled profile/descriptor publication. Call only while the title is stopped.
@@ -443,4 +443,4 @@ bool MigrateLegacyGameSettingsFile(const std::string& legacy_path,
 bool LoadSettingsData(const std::string& runtime_dir, std::vector<SettingsPreset>* presets,
                       std::vector<GameRecipe>* recipes, std::string* reason);
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

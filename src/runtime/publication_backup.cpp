@@ -6,7 +6,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 using platform::ManagedDirectory;
 using platform::DirectoryPolicy;
@@ -120,4 +120,4 @@ Result<RegistryBackupBinding> CreatePublicationRegistryBackup(
     return CreateFailure(StorageError::kInvalidData, "Backup readback failed; file retained for reconciliation.");
   return Result<RegistryBackupBinding>::Success(std::move(binding));
 }
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

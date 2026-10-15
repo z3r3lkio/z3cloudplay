@@ -4,19 +4,19 @@
 #include <string>
 #include <vector>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 // SteamStub is Steam's DRM wrapper: the program starts in a ".bind" section that checks for
 // the Steam client, decrypts the code section and jumps to the original entry point. The
-// console has no Steam client, so Playden restores the program as it was built: code
+// console has no Steam client, so Z3CloudPlay restores the program as it was built: code
 // decrypted, entry point back, ".bind" removed when nothing else needs it. Variants 3.1 and 3.0
 // are handled in 64-bit and 32-bit programs (also with the code left unencrypted, and when the
 // wrapper starts from a TLS callback), variants 2.1, 2.0 and 1.0 in 32-bit ones; others are refused.
 
 enum class SteamStubKind {
   kNone,         // not wrapped (or not a program)
-  kSupported,    // wrapped in a variant Playden unpacks
-  kUnsupported,  // wrapped, but in a variant or with options Playden doesn't handle
+  kSupported,    // wrapped in a variant Z3CloudPlay unpacks
+  kUnsupported,  // wrapped, but in a variant or with options Z3CloudPlay doesn't handle
 };
 
 struct SteamStubInfo {
@@ -32,7 +32,7 @@ SteamStubInfo InspectSteamStub(const std::string& path);
 // SteamStub program; program is then unchanged.
 bool UnpackSteamStub(std::string* program, std::string* why);
 
-// Largest program Playden unpacks (it is held in memory while it is rewritten).
+// Largest program Z3CloudPlay unpacks (it is held in memory while it is rewritten).
 inline constexpr std::size_t kSteamStubMaxProgramBytes = 512u * 1024u * 1024u;
 
 struct SteamStubResult {
@@ -48,4 +48,4 @@ struct SteamStubResult {
 // is already unpacked and has its .orig counts as found.
 SteamStubResult UnpackSteamStubPrograms(const std::string& install_root, const std::vector<std::string>& programs);
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

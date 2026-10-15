@@ -5,7 +5,7 @@
 #include <string_view>
 #include <vector>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 // Steamworks emulation for games without a Steam client on the console: the game's
 // steam_api.dll / steam_api64.dll is replaced by gbe_fork's (shipped unmodified in
@@ -15,8 +15,8 @@ namespace playden::runtime {
 inline constexpr const char* kSteamApi32Sha256 = "cae4372bceda997d6c73cebc1c14eb27d39b74a7999d8f28384bdfd8d746a79c";
 inline constexpr const char* kSteamApi64Sha256 = "70d9826a402d3a78b0c07e9f7ea7c6832468a1113013f31ea570fccaa5445ea9";
 
-// The emulator builds earlier Playden versions shipped (32-bit, 64-bit). A game they set up
-// still has one as its DLL: it is Playden's, replaced like the current one and never kept as
+// The emulator builds earlier Z3CloudPlay versions shipped (32-bit, 64-bit). A game they set up
+// still has one as its DLL: it is Z3CloudPlay's, replaced like the current one and never kept as
 // the game's original. Add the outgoing pins here whenever the two above change.
 std::vector<std::string> RetiredSteamApiSha256();
 
@@ -25,16 +25,16 @@ std::vector<std::string> RetiredSteamApiSha256();
 inline constexpr const char* kLegacySteamSha256 = "f813075716892ab19ee9b0c06000c328bd5f15e713692384a30ddbcfc9065e57";
 
 // Where the emulator keeps ISteamRemoteStorage files: <local_save_path>/<app id>/remote, which
-// is where Playden's Cloud mapping looks (steam/backend/cloud_mapping.h kEmulatorUserData).
+// is where Z3CloudPlay's Cloud mapping looks (steam/backend/cloud_mapping.h kEmulatorUserData).
 inline constexpr const char* kSteamworksSavePath = "C:\\Program Files (x86)\\Steam\\userdata\\0";
 
 // What the download recorded beside the game (SteamworksFactsFile): installed depots and the
 // DLC this account owns.
-inline constexpr const char* kSteamworksFactsFile = ".playden-steam";  // "depots=1,2\ndlc=3\n"
+inline constexpr const char* kSteamworksFactsFile = ".z3cloudplay-steam";  // "depots=1,2\ndlc=3\n"
 
 struct SteamworksIdentity {
   std::uint32_t app_id = 0;
-  std::string account_name;  // empty: "Playden"
+  std::string account_name;  // empty: "Z3CloudPlay"
   std::uint64_t steam_id = 0;
   std::string language = "english";
   std::vector<std::uint32_t> owned_dlc;
@@ -72,7 +72,7 @@ SteamworksResult RestoreSteamworks(const std::string& install_root,
 SteamworksResult ProvideLegacySteam(const std::string& install_root, const std::string& emulator_dir,
                                     const std::vector<std::string>& programs);
 
-// Removes a steam.dll Playden put there (same bytes as the minimal one) from each program's folder.
+// Removes a steam.dll Z3CloudPlay put there (same bytes as the minimal one) from each program's folder.
 SteamworksResult RemoveLegacySteam(const std::string& install_root, const std::vector<std::string>& programs);
 
 // Interface versions a steam_api DLL asks for, as gbe_fork's generate_interfaces finds them.
@@ -84,4 +84,4 @@ bool WriteSteamworksFacts(const std::string& install_root, const std::vector<std
                           const std::vector<std::uint32_t>& owned_dlc);
 bool ReadSteamworksFacts(const std::string& install_root, SteamworksIdentity* identity);
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

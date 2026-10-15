@@ -4,7 +4,7 @@
 #include <cstring>
 #include <string_view>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 constexpr char kHex[] = "0123456789abcdef";
 
@@ -131,4 +131,4 @@ std::optional<std::string> SerializePublicationMetadata(const PwTitlePublication
   return output;
 }
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

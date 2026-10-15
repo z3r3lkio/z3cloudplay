@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 namespace fs = std::filesystem;
 
@@ -52,7 +52,7 @@ bool ReadSmall(const fs::path& path, std::string* bytes) {
 
 // Through a temporary file in the same folder, synced, then renamed over the original.
 bool WriteAtomic(const fs::path& path, std::string_view bytes) {
-  const auto temporary = path.parent_path() / (".playden-" + path.filename().string() + ".tmp");
+  const auto temporary = path.parent_path() / (".z3cloudplay-" + path.filename().string() + ".tmp");
   ::unlink(temporary.c_str());
   const int file = ::open(temporary.c_str(), O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, 0644);
   if (file < 0) return false;
@@ -149,7 +149,7 @@ DotnetHeapResult LimitDotnetHeap(const std::string& game_root) {
       if (!updated) continue;  // an unusual layout is left as the game shipped it
       if (!WriteAtomic(config, *updated)) {
         result.ok = false;
-        result.message = "Playden could not update the game's .NET settings (" + relative + ").";
+        result.message = "Z3CloudPlay could not update the game's .NET settings (" + relative + ").";
         return result;
       }
       result.changed.push_back(relative);
@@ -158,4 +158,4 @@ DotnetHeapResult LimitDotnetHeap(const std::string& game_root) {
   return result;
 }
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

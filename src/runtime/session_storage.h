@@ -9,7 +9,7 @@
 #include <optional>
 #include <string>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 // Host-only mapping of the canonical console /data mount. RuntimeInstall
 // identity remains canonical; arbitrary record roots are never accepted.
@@ -58,4 +58,4 @@ private:
   Storage &storage_;
 };
 
-} // namespace playden::runtime
+} // namespace z3cloudplay::runtime

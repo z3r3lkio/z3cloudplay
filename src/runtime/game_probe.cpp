@@ -15,7 +15,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 
 namespace fs = std::filesystem;
@@ -322,12 +322,12 @@ GameDefaults DefaultsFor(const GameProbe& probe, const RuntimeAbilities& runtime
   if (probe.shared_section && !runtime.shared_sections)
     soft = "This game's program needs a shared memory section the PS5 can't map yet.";
   else if (probe.dotnet && !runtime.wine_mono)
-    soft = "This game needs .NET, which Playden's runtime doesn't include yet.";
+    soft = "This game needs .NET, which Z3CloudPlay's runtime doesn't include yet.";
   if (probe.steam_stub && !probe.steam_stub_supported) {
-    out.refusal = "This game's program has Steam DRM in a form Playden can't unpack yet.";
+    out.refusal = "This game's program has Steam DRM in a form Z3CloudPlay can't unpack yet.";
   } else if (probe.engine == "nwjs") {
     // Chromium starts helper processes, and in one process it reserves 64 GB of address space.
-    out.refusal = "This game runs on NW.js (a built-in web browser), which Playden can't start on the PS5 yet.";
+    out.refusal = "This game runs on NW.js (a built-in web browser), which Z3CloudPlay can't start on the PS5 yet.";
   } else if (probe.engine == "unity") {
     // Unity also names d3d12 and Vulkan; D3D11 is the path DXVK covers. Unity before 2017.2
     // (the player built into the program) still has a Direct3D 9 renderer, which draws on the
@@ -404,4 +404,4 @@ std::string DetectedLabel(const std::string& summary) {
   return api.empty() ? engine : engine + " · " + api;
 }
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

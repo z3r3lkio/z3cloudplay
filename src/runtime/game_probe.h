@@ -3,7 +3,7 @@
 #include <set>
 #include <string>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 // What a Windows game's files say about how to start it on the console. Read only and
 // bounded: symbolic links are never followed, folders are walked a few levels deep and at
@@ -17,7 +17,7 @@ struct GameProbe {
   std::set<std::string> apis;
   bool dotnet = false;      // a .NET program (needs Wine Mono, which only some kits carry)
   bool steam_stub = false;  // SteamStub DRM: the entry point is in a ".bind" section
-  bool steam_stub_supported = false;  // ...in a variant Playden unpacks (runtime/steam_stub.h)
+  bool steam_stub_supported = false;  // ...in a variant Z3CloudPlay unpacks (runtime/steam_stub.h)
   std::string steam_stub_detail;      // for logs: the variant, or why it is not unpacked
   // A writable section shared between processes whose pages the console can't map
   // (16 KB pages; GameMaker's runner has one, ".mydata").
@@ -43,7 +43,7 @@ struct GameDefaults {
   std::string refusal;  // non-empty: the console cannot run this program; a sentence for the player
   // The refusal comes from a broad detection (.NET, a shared section) that a run could get
   // past, so the player may "Try anyway"; graphics and arguments are still filled in.
-  // SteamStub forms Playden can't unpack, NW.js and Direct3D 12 only are never soft.
+  // SteamStub forms Z3CloudPlay can't unpack, NW.js and Direct3D 12 only are never soft.
   bool refusal_soft = false;
   std::string summary;  // e.g. "unity,d3d11 graphics=dxvk", for logs and the settings sheet
 };
@@ -61,4 +61,4 @@ std::string DetectedLabel(const std::string& summary);
 // The DLL overrides that make a game use the bottle's DXVK instead of Wine's Direct3D.
 inline constexpr const char* kDxvkOverrides = "d3d8,d3d9,d3d10core,d3d11,dxgi=n";
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

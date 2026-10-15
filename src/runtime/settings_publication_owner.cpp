@@ -2,7 +2,7 @@
 #include "platform/managed_file_lock.h"
 #include <cerrno>
 #include <unistd.h>
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 // The program a publication starts: Game settings may have chosen another one
 // (RuntimeHost::RepublishSettings). The captured operation carries it, and the record names it
@@ -36,7 +36,7 @@ PublicationPaths OperationPaths(const SettingsPublicationOperation& operation, c
   return {map(profiles + operation.plan.profile_id + ".profile"), map(profiles + "profiles.lst"),
           map(operation.install.data_root + "/library/input"),
           map("/data/homebrew/" + operation.install.title_id + "/game-launch.json"),
-          map(profiles + ".playden-publication")};
+          map(profiles + ".z3cloudplay-publication")};
 }
 bool MatchingJournal(const RuntimeInstall& r, const SettingsPublicationOperation& o) {
   return r.journal && r.journal->operation == "settings-publication" && r.journal->operation_id == o.transaction_id;
@@ -136,7 +136,7 @@ PackageActionResult SettingsPublicationOwner::InitializeControl(const RuntimeIns
   auto data = platform::ManagedDirectory::Open(data_path, platform::DirectoryPolicy::kPrivate);
   if (!data) return Failure("publication-control-data", "Existing owned private bottle data root is unavailable.");
   struct stat info{};
-  const bool exists = data->InspectChild(".playden-control", &info);
+  const bool exists = data->InspectChild(".z3cloudplay-control", &info);
   if (!exists && errno != ENOENT)
     return Failure("publication-control-collision", "Control path is foreign or unavailable.");
   if (!recovering) {
@@ -161,10 +161,10 @@ PackageActionResult SettingsPublicationOwner::InitializeControl(const RuntimeIns
     return Failure("publication-control-owner", "The game's data folder changed after the control setup was recorded.");
   // Recheck absence after persistence; a prepared setup never recreates a
   // missing directory or lock, because replacement would change lease identity.
-  const bool now_exists = data->InspectChild(".playden-control", &info);
+  const bool now_exists = data->InspectChild(".z3cloudplay-control", &info);
   if ((!now_exists && errno != ENOENT) || (!now_exists && prepared))
     return Failure("publication-control-collision", "Control path changed after admission; retain the OWNER intent.");
-  auto control = data->OpenChild(".playden-control", platform::DirectoryPolicy::kPrivate, !prepared);
+  auto control = data->OpenChild(".z3cloudplay-control", platform::DirectoryPolicy::kPrivate, !prepared);
   if (!control || !control->Sync() || !data->Sync())
     return Failure("publication-control-directory", "Private control creation/sync failed; recover from durable OWNER intent.");
   if (!checkpoint(PublicationControlStep::kDirectorySynced))
@@ -207,7 +207,7 @@ Result<SettingsPublicationOperation> SettingsPublicationOwner::Prepare(const Run
   auto current = records_.Find(record.install_id);
   if (!current || !SameRuntimeInstallIdentity(*current, record) || current->state == PreparationState::kRemoving)
     return fail("The install record does not match this game, or it is being removed.");
-  const auto canonical = std::filesystem::path(record.data_root + "/.playden-control");
+  const auto canonical = std::filesystem::path(record.data_root + "/.z3cloudplay-control");
   const auto control_path = prefix.empty() ? canonical : prefix / canonical.relative_path();
   // A missing control folder or lock is set up; an existing one (also one an
   // interrupted first setup left without its intent) is used as it is.
@@ -303,7 +303,7 @@ PackageActionResult SettingsPublicationOwner::Resume(const RuntimeInstall& recor
   };
   std::optional<SettingsPublicationOperation> operation;
   {
-    const auto control_path = map(current->data_root + "/.playden-control");
+    const auto control_path = map(current->data_root + "/.z3cloudplay-control");
     auto control = platform::ManagedDirectory::Open(control_path, platform::DirectoryPolicy::kPrivate);
     auto lease = control ? platform::ManagedFileLock::Acquire(*control, "publication.lock", platform::LockMode::kPublisher) : std::nullopt;
     if (!lease)
@@ -337,7 +337,7 @@ PackageActionResult SettingsPublicationOwner::Resume(const RuntimeInstall& recor
   const auto profiles = operation->install.data_root + "/library/profiles/";
   const PublicationPaths paths{map(profiles + operation->plan.profile_id + ".profile"), map(profiles + "profiles.lst"),
       map(operation->install.data_root + "/library/input"),
-      map("/data/homebrew/" + operation->install.title_id + "/game-launch.json"), map(profiles + ".playden-publication")};
+      map("/data/homebrew/" + operation->install.title_id + "/game-launch.json"), map(profiles + ".z3cloudplay-publication")};
   auto dependencies = Dependencies(prefix);
   return PublishSettingsOperation(*operation, paths, dependencies);
 }
@@ -446,4 +446,4 @@ PublicationDependencies SettingsPublicationOwner::Dependencies(const std::filesy
   deps.authorize_retirement = [this](const auto& previous, const auto& next) { return AuthorizeRetirement(previous, next); };
   return deps;
 }
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

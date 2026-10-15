@@ -2,7 +2,7 @@
 
 #include <utility>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 
 bool ManagedPublication(const RuntimeInstall& record) {
@@ -138,7 +138,7 @@ RuntimeInstallService::Prepare(const std::string &install_id) {
     record->last_failure =
         RuntimeFailure{"recipe-unavailable",
                        compatibility.reason.empty()
-                           ? "Playden does not know how to start this game yet."
+                           ? "Z3CloudPlay does not know how to start this game yet."
                            : compatibility.reason};
     record->journal.reset();
     const auto persisted = Persist(*record);
@@ -187,7 +187,7 @@ RuntimeInstallService::Retry(const std::string &install_id) {
     record->last_failure =
         RuntimeFailure{"recipe-unavailable",
                        compatibility.reason.empty()
-                           ? "Playden does not know how to start this game yet."
+                           ? "Z3CloudPlay does not know how to start this game yet."
                            : compatibility.reason};
     const auto persisted = Persist(*record);
     return persisted.ok() ? InstallServiceResult::Failure(
@@ -283,7 +283,7 @@ RuntimeInstallService::StepNative(RuntimeInstall record,
   if (native.collision) {
     return Fail(std::move(record), InstallServiceError::kNativeCollision,
                 "native-collision",
-                "native title does not match Playden ownership");
+                "native title does not match Z3CloudPlay ownership");
   }
   if (native.installed && native.source_available &&
       native.owned_manifest_matches) {
@@ -302,7 +302,7 @@ RuntimeInstallService::StepNative(RuntimeInstall record,
       !native.owned_manifest_matches) {
     return Fail(std::move(record), InstallServiceError::kNativeCollision,
                 "native-collision",
-                "native title does not match Playden ownership");
+                "native title does not match Z3CloudPlay ownership");
   }
   if (native.installed && !native.source_available) {
     return Fail(std::move(record), InstallServiceError::kNativeIncoherent,
@@ -442,4 +442,4 @@ std::vector<RuntimeInstall> RuntimeInstallService::Snapshot() const {
   return records_.Snapshot();
 }
 
-} // namespace playden::runtime
+} // namespace z3cloudplay::runtime

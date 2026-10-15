@@ -8,7 +8,7 @@
 #include <string_view>
 #include <utility>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 
 constexpr std::size_t kMaxJournalBytes = 64 * 1024;
@@ -93,7 +93,7 @@ bool SupportedSession(const LaunchSession &session) {
 
 std::optional<std::string> Serialize(const LaunchSession &session) {
   if (!SupportedSession(session)) return std::nullopt;
-  std::string output = "PLAYDEN-LAUNCH-V1\n";
+  std::string output = "Z3CLOUDPLAY-LAUNCH-V1\n";
   const auto append_text = [&](const std::string &value) {
     AppendHex(&output, value);
     output.push_back('\n');
@@ -132,7 +132,7 @@ std::optional<LaunchSession> Parse(const Bytes &bytes) {
       if (index + 1 == lines.size() && start != text.size()) return std::nullopt;
     }
   }
-  if (lines[0] != "PLAYDEN-LAUNCH-V1") return std::nullopt;
+  if (lines[0] != "Z3CLOUDPLAY-LAUNCH-V1") return std::nullopt;
   LaunchSession session;
   const auto session_id = Unhex(lines[1]);
   const auto install_id = Unhex(lines[2]);
@@ -769,4 +769,4 @@ LaunchSnapshot LaunchService::Snapshot() {
   return snapshot_;
 }
 
-} // namespace playden::runtime
+} // namespace z3cloudplay::runtime

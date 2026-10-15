@@ -23,7 +23,7 @@
 #include <unistd.h>
 #include <utility>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 
 namespace json = homebrew::json;
@@ -32,7 +32,7 @@ using platform::DirectoryPolicy;
 using platform::ManagedDirectory;
 
 SettingDefinition Choice(std::string id, std::string label, std::string effect, std::string also_called,
-                         SettingTier tier, std::vector<SettingChoice> choices, std::string playden_default,
+                         SettingTier tier, std::vector<SettingChoice> choices, std::string z3cloudplay_default,
                          int phase = 1, ApplyMode apply = ApplyMode::kNextLaunch) {
   SettingDefinition definition;
   definition.id = std::move(id);
@@ -43,7 +43,7 @@ SettingDefinition Choice(std::string id, std::string label, std::string effect, 
   definition.phase = phase;
   definition.apply = apply;
   definition.choices = std::move(choices);
-  definition.playden_default = std::move(playden_default);
+  definition.z3cloudplay_default = std::move(z3cloudplay_default);
   return definition;
 }
 
@@ -176,7 +176,7 @@ std::vector<SettingDefinition> BuildCatalogue() {
                         "auto"));
   list.push_back(Choice("steam_features", "Steam features", "How the game reaches Steam without the Steam client.",
                         "steam_api.dll · steam_api64.dll", T::kCompatibility,
-                        {{"emulate", "Offline emulation", "Playden's Steam emulator answers the game."},
+                        {{"emulate", "Offline emulation", "Z3CloudPlay's Steam emulator answers the game."},
                          {"game", "Game's own files", "The game's Steam library, unchanged."}},
                         "game", 1, ApplyMode::kGameClosed));
   list.push_back(Choice("frame_latency", "Frame latency", "How many frames can wait in the queue.",
@@ -209,10 +209,10 @@ std::vector<SettingDefinition> BuildCatalogue() {
                         {{"kit", "Runtime default", ""}, {"4", "4 cores", "For games that fail with many cores."},
                          {"8", "8 cores", ""}},
                         "kit", 3, ApplyMode::kGameClosed));
-  // Shown only for a game whose program Playden refuses for a reason a run could get past.
-  list.push_back(Choice("start_check", "Known problems", "What Playden does with a problem it found in the game's program.",
+  // Shown only for a game whose program Z3CloudPlay refuses for a reason a run could get past.
+  list.push_back(Choice("start_check", "Known problems", "What Z3CloudPlay does with a problem it found in the game's program.",
                         ".NET · shared section", T::kCompatibility,
-                        {{"stop", "Don't start", "Playden stops before a program it expects to fail."},
+                        {{"stop", "Don't start", "Z3CloudPlay stops before a program it expects to fail."},
                          {"try", "Try anyway", "Prepares the game anyway. It may not start."}},
                         "stop", 1));
   list.push_back(Choice("logging", "Logging", "How much detail goes into the game's log file.", "WINEDEBUG",
@@ -350,13 +350,13 @@ std::string Unavailable(const SettingDefinition& definition, const std::string& 
     const auto controller = values.find("controller");
     if (controller == values.end() || controller->second.value != "xinput") return "Only with the Xbox controller.";
   }
-  // Rows whose runtime or Playden side is not built yet: listed so players see what is coming.
+  // Rows whose runtime or Z3CloudPlay side is not built yet: listed so players see what is coming.
   if (id == "invert_stick") return "Needs a prospero-win update that inverts sticks.";
   // Wine sets the user locale from the Unix locale (LANG, LC_ALL) at start and only mirrors it into
   // Control Panel\International, so a registry value alone would be overwritten.
   if (id == "locale") return "Needs a prospero-win update that sets the game's language (LANG).";
   // The title publication carries only the two registry values it owns (Windows version, text scale).
-  if (id == "registry_dll_overrides") return "Needs a prospero-win update that lets Playden write more registry values.";
+  if (id == "registry_dll_overrides") return "Needs a prospero-win update that lets Z3CloudPlay write more registry values.";
   // Wine reads WINE_CPU_TOPOLOGY from the [environment] section; [debug] env does not take WINE_ names.
   if (id == "cpu_topology" && !kit.environment) return "Needs a prospero-win update that reads [environment].";
   if (id == "performance_overlay" && graphics == "gdi") return "Only available with DXVK or OpenGL.";
@@ -514,7 +514,7 @@ bool BuildEffectiveSettings(const GameRecipe& recipe, const SettingsPreset* pres
   EffectiveSettings out;
   for (const auto& definition : SettingsCatalogue()) {
     EffectiveValue value;
-    value.value = definition.id == "launch_option" ? DefaultLaunchEntry(recipe) : definition.playden_default;
+    value.value = definition.id == "launch_option" ? DefaultLaunchEntry(recipe) : definition.z3cloudplay_default;
     const auto layer = [&](const std::map<std::string, std::string>& source, ValueSource kind) {
       const auto found = source.find(definition.id);
       if (found == source.end()) return true;
@@ -567,14 +567,14 @@ bool BuildEffectiveSettings(const GameRecipe& recipe, const SettingsPreset* pres
   }
 
   // Availability depends on graphics, kit and other values; unavailable rows fall back to
-  // the Playden default so a hidden setting never takes effect.
+  // the Z3CloudPlay default so a hidden setting never takes effect.
   for (const auto& definition : SettingsCatalogue()) {
     auto& value = out.values[definition.id];
     const auto reason = Unavailable(definition, out.graphics, kit, out.values);
     if (reason.empty()) continue;
     value.available = false;
     value.reason = reason;
-    value.value = definition.playden_default;
+    value.value = definition.z3cloudplay_default;
   }
 
   // The program: the chosen launch entry, or a program the player picked in the game folder.
@@ -620,13 +620,13 @@ bool BuildEffectiveSettings(const GameRecipe& recipe, const SettingsPreset* pres
       launch->working_directory = !relative || *relative == "." ? std::string() : *relative;
     } else {
       folder.value = launch->working_directory;
-      folder.source = launch->working_directory.empty() ? ValueSource::kPlayden : ValueSource::kRecipe;
+      folder.source = launch->working_directory.empty() ? ValueSource::kZ3CloudPlay : ValueSource::kRecipe;
     }
     if (own_arguments.source == ValueSource::kUser) {
       launch->arguments = own_arguments.value;
     } else {
       own_arguments.value = launch->arguments;
-      own_arguments.source = launch->arguments.empty() ? ValueSource::kPlayden : ValueSource::kRecipe;
+      own_arguments.source = launch->arguments.empty() ? ValueSource::kZ3CloudPlay : ValueSource::kRecipe;
     }
     out.launch_storage = std::make_shared<const LaunchEntry>(std::move(*launch));
     out.launch = out.launch_storage.get();
@@ -638,7 +638,7 @@ bool BuildEffectiveSettings(const GameRecipe& recipe, const SettingsPreset* pres
   auto& required = out.values["arguments"];
   if (required.source != ValueSource::kUser) {
     required.value = recipe.arguments;
-    required.source = recipe.arguments.empty() ? ValueSource::kPlayden : ValueSource::kRecipe;
+    required.source = recipe.arguments.empty() ? ValueSource::kZ3CloudPlay : ValueSource::kRecipe;
   }
   std::string arguments = required.value;
   // Godot 4 cannot open its OpenGL window under Mesa's WGL/Zink on the PS5 (Slay the Spire 2), but its Vulkan
@@ -673,7 +673,7 @@ bool BuildEffectiveSettings(const GameRecipe& recipe, const SettingsPreset* pres
                                                                                      : kDxvkOverrides + (";" + list);
     append(out.values["library_overrides"].value);
     overrides_row.value = list;
-    overrides_row.source = list.empty() ? ValueSource::kPlayden
+    overrides_row.source = list.empty() ? ValueSource::kZ3CloudPlay
                          : out.values["library_overrides"].source == ValueSource::kUser ? ValueSource::kUser
                                                                                          : ValueSource::kRecipe;
   } else if (IsGeneratedRecipeId(recipe.id)) {
@@ -719,8 +719,8 @@ bool RenderProsperoProfile(const GameRecipe& recipe, const EffectiveSettings& se
   std::string name = recipe.name.empty() ? target.id : recipe.name;
   if (name.size() > kProsperoMaxNameBytes) name.resize(kProsperoMaxNameBytes);
 
-  std::string text = "; Generated by Playden from recipe " + recipe.id + " v" + std::to_string(recipe.version) +
-                     ". Edit settings in Playden.\n[application]\n";
+  std::string text = "; Generated by Z3CloudPlay from recipe " + recipe.id + " v" + std::to_string(recipe.version) +
+                     ". Edit settings in Z3CloudPlay.\n[application]\n";
   text += "id = " + target.id + "\n";
   text += "name = " + name + "\n";
   text += "executable = " + *root + "\\" + Backslashes(*executable) + "\n";
@@ -748,12 +748,12 @@ bool RenderProsperoProfile(const GameRecipe& recipe, const EffectiveSettings& se
   text += "\n[input]\n";
   if (value("controller_preset") != "none") text += "preset = " + value("controller_preset") + "\n";
   // A controller preset brings its own mode, pointer stick and speed. A row overrides them only when it was
-  // set at least as deliberately as the preset (player over settings preset over recipe over Playden).
+  // set at least as deliberately as the preset (player over settings preset over recipe over Z3CloudPlay).
   const bool preset = value("controller_preset") != "none";
   const auto preset_source = settings.values.at("controller_preset").source;
   const auto chosen = [&](const char* id) {
     const auto source = settings.values.at(id).source;
-    return !preset || (source != ValueSource::kPlayden && source >= preset_source);
+    return !preset || (source != ValueSource::kZ3CloudPlay && source >= preset_source);
   };
   if (chosen("controller")) text += "mode = " + value("controller") + "\n";
   if (chosen("pointer_stick")) text += "mouse = " + value("pointer_stick") + "\n";
@@ -859,7 +859,7 @@ bool RenderProsperoProfile(const GameRecipe& recipe, const EffectiveSettings& se
   return true;
 }
 
-constexpr const char* kDxvkHeader = "# Generated by Playden from this game's settings.";
+constexpr const char* kDxvkHeader = "# Generated by Z3CloudPlay from this game's settings.";
 
 std::string RenderDxvkConfig(const EffectiveSettings& settings) {
   const auto option = [&](const char* id) -> const EffectiveValue& { return settings.values.at(id); };
@@ -1352,7 +1352,7 @@ bool GenerateGameRecipe(std::uint32_t app_id, const std::string& name, const std
   GameRecipe checked;
   std::string why;
   if (!ParseGameRecipe(SerializeGameRecipe(out), &checked, &why))
-    return fail("Playden could not set up this game: " + why, false);
+    return fail("Z3CloudPlay could not set up this game: " + why, false);
   *recipe = std::move(checked);
   return true;
 }
@@ -1553,7 +1553,7 @@ bool WriteAtomicAt(const ManagedDirectory& directory, const char* name,
   int file = -1;
   for (unsigned attempt = 0; attempt < 8; ++attempt) {
     const auto serial = sequence.fetch_add(1, std::memory_order_relaxed);
-    temporary = std::string(name) + ".playden-tmp-" + std::to_string(static_cast<long long>(::getpid())) + "-" +
+    temporary = std::string(name) + ".z3cloudplay-tmp-" + std::to_string(static_cast<long long>(::getpid())) + "-" +
                 std::to_string(static_cast<long long>(tick)) + "-" + std::to_string(serial);
     file = directory.CreateExclusiveFile(temporary, mode);
     if (file >= 0) break;
@@ -1666,7 +1666,7 @@ bool ApplyGameSettings(const GameRecipe& recipe, const EffectiveSettings& settin
   const bool has_config = read_config == RelativeRead::kPresent;
   if (has_config && existing.compare(0, std::char_traits<char>::length(kDxvkHeader), kDxvkHeader) != 0)
   {
-    return fail("the game folder has its own dxvk.conf; Playden will not replace it");
+    return fail("the game folder has its own dxvk.conf; Z3CloudPlay will not replace it");
   }
 
   if (!PublishProsperoProfile(prospero_root, profile, reason)) return false;
@@ -2004,7 +2004,7 @@ bool ApplyRegistryValues(std::string* user_reg, const std::vector<RegistryValue>
   return true;
 }
 
-// Edits one hive of the stopped bottle in place: the original goes to <hive>.playden-backup
+// Edits one hive of the stopped bottle in place: the original goes to <hive>.z3cloudplay-backup
 // first, and an unchanged hive is not written at all.
 static bool ApplyRegistryFileValues(const std::vector<RegistryValue>& values, const std::string& prefix_dir,
                                     std::int64_t unix_time, std::string* reason, const std::string& hive = "user.reg") {
@@ -2025,7 +2025,7 @@ static bool ApplyRegistryFileValues(const std::vector<RegistryValue>& values, co
   std::string edited = original;
   if (!ApplyRegistryValues(&edited, values, unix_time, reason)) return false;
   if (edited == original) return true;
-  const auto backup = hive + ".playden-backup";
+  const auto backup = hive + ".z3cloudplay-backup";
   if (!WriteAtomicAt(*directory, backup.c_str(), original, 0600,
                      false, true)) {
     return fail("cannot back up " + hive);
@@ -2123,9 +2123,9 @@ Ue3EulaResult AcceptUe3Eula(const std::string& game_root, const std::vector<std:
   return result;
 }
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 const std::vector<std::string>& SettingsKitCapabilityNames() {
   // Sorted, as a kit manifest lists them.
@@ -2163,7 +2163,7 @@ bool BuildSettingsLaunchPlan(const SettingsLaunchInput& input, SettingsLaunchPla
   };
   if (!input.recipe || !plan) return fail("no recipe or plan output");
   if (input.record.preset_id.empty()) {
-    if (input.preset && (input.preset->id != "playden-default" || !input.preset->settings.empty()))
+    if (input.preset && (input.preset->id != "z3cloudplay-default" || !input.preset->settings.empty()))
       return fail("default record does not match the supplied preset");
   } else if (!input.preset || input.preset->id != input.record.preset_id) {
     return fail("record preset is missing or does not match the supplied preset");
@@ -2223,7 +2223,7 @@ bool ApplySettingsFiles(const SettingsLaunchPlan& plan, const std::string& insta
   const auto close_fail = [&](std::string why) { return fail(std::move(why)); };
   if (read == RelativeRead::kError) return close_fail("cannot read dxvk.conf");
   if (has_config && existing.compare(0, std::char_traits<char>::length(kDxvkHeader), kDxvkHeader) != 0)
-    return close_fail("the game folder has its own dxvk.conf; Playden will not replace it");
+    return close_fail("the game folder has its own dxvk.conf; Z3CloudPlay will not replace it");
   // This is a stopped-title file operation, not a cross-directory transaction.
   // Restore config bytes/mode on registry failure and surface failed rollback.
   // The integration owner journals readiness and reconciles any interrupted apply.
@@ -2253,9 +2253,9 @@ bool ApplySettingsFiles(const SettingsLaunchPlan& plan, const std::string& insta
   return true;
 }
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 CommunityRecipe BuildCommunityRecipe(const GameRecipe& recipe, const EffectiveSettings& settings) {
   CommunityRecipe out;
@@ -2284,8 +2284,8 @@ CommunityRecipe BuildCommunityRecipe(const GameRecipe& recipe, const EffectiveSe
                                                "graphics", "start_check", "logging"};
   for (const auto& definition : SettingsCatalogue()) {
     const auto& row = settings.values.at(definition.id);
-    if (fields.count(definition.id) || !row.available || row.source == ValueSource::kPlayden ||
-        row.value == definition.playden_default)
+    if (fields.count(definition.id) || !row.available || row.source == ValueSource::kZ3CloudPlay ||
+        row.value == definition.z3cloudplay_default)
       continue;
     shared.defaults[definition.id] = row.value;
   }
@@ -2389,4 +2389,4 @@ bool CommunityPresetSupported(const CommunityPreset& community, const KitCapabil
   return true;
 }
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

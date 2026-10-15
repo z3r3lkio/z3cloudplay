@@ -5,7 +5,7 @@
 #include <unordered_set>
 #include <utility>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 namespace {
 
 bool ValidUuid(const std::string &value) {
@@ -452,4 +452,4 @@ SessionReconciler::ConfirmRecovery(const std::string &session_id,
   return journal_.Save(entry);
 }
 
-} // namespace playden::runtime
+} // namespace z3cloudplay::runtime

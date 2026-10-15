@@ -11,7 +11,7 @@
 #include <utility>
 #include <vector>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 enum class PreparationState {
   kDownloaded,
@@ -208,4 +208,4 @@ class RuntimeInstallRepository {
   std::unordered_map<std::string, std::string> reservations_;
 };
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime

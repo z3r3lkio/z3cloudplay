@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace playden::runtime {
+namespace z3cloudplay::runtime {
 
 // .NET 7 and later reserve 256 GiB of address space for the garbage collector's regions at
 // start, which the console refuses ("GC heap initialization failed", results/20261008-slay-
@@ -23,4 +23,4 @@ struct DotnetHeapResult {
 
 DotnetHeapResult LimitDotnetHeap(const std::string& game_root);
 
-}  // namespace playden::runtime
+}  // namespace z3cloudplay::runtime
