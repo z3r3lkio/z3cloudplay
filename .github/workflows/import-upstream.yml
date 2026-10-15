@@ -24,6 +24,9 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # GitHub Actions tokens cannot publish workflow changes without workflows permission.
+          git restore --source=HEAD --worktree --staged -- .github/workflows
+          git clean -fd -- .github/workflows
           git add -A
           git diff --cached --quiet || git commit -m "Import PlayDen source and rebrand z3cloudplay"
           git push origin HEAD:main
