@@ -1,4 +1,5 @@
 name: Secure Vault Crypto Tests
+# Includes PS5 integration source syntax checks.
 on:
   push:
     branches: [main, feature/persistent-encrypted-sessions]
