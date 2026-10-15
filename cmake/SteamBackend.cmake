@@ -194,6 +194,8 @@ target_include_directories(z3cloudplay_secure_session_repository PUBLIC "${CMAKE
 target_compile_features(z3cloudplay_secure_session_repository PUBLIC cxx_std_17)
 target_link_libraries(z3cloudplay_secure_session_repository PUBLIC
     z3cloudplay_secure_session_vault z3cloudplay_storage)
+# Ensure native Steam consumers resolve encrypted persistence when selected.
+target_link_libraries(z3cloudplay_steam_core PUBLIC z3cloudplay_secure_session_repository)
 target_include_directories(z3cloudplay_secure_session_vault PUBLIC
     "${CMAKE_SOURCE_DIR}/src"
     "${Z3CLOUDPLAY_STEAM_PREFIX}/include")
