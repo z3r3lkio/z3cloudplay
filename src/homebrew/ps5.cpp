@@ -298,7 +298,11 @@ int main() {
         z3cloudplay::steam::CdnClient install_cdn(paths.trust_store);
         z3cloudplay::steam::SteamInstallRunner install_runner(install_cm, install_cdn);
         install_runner.SetTuning([root = paths.title_root] {
-            return z3cloudplay::steam::ReadDownloadTuning(root + "/dev/download-tuning.txt");
+            auto tuning = z3cloudplay::steam::ReadDownloadTuning(root + "/dev/download-tuning.txt");
+            // Six parallel CDN chunk fetches instead of four. User overrides take priority.
+            // Parallelism is bounded by DepotInstaller (maximum eight slots).
+            if (tuning.slots == 4) tuning.slots = 6;
+            return tuning;
         });
         install_runner.SetLog([](z3cloudplay::GameId app, const char* step, const char* category, const char* detail) {
             char line[640];
