@@ -2,6 +2,7 @@
 #include "steam/secure_session_vault.h"
 #include <cstdint>
 #include <limits>
+#include <mbedtls/platform_util.h>
 
 namespace z3cloudplay::security {
 namespace {
@@ -10,6 +11,18 @@ constexpr const char* kTemp="session.v2.tmp";
 constexpr std::size_t kLimit=64*1024;
 constexpr std::size_t kTokenLimit=24*1024;
 constexpr std::size_t kNameLimit=256;
+struct SecretStringGuard {
+  std::string& value;
+  ~SecretStringGuard() {
+    if (!value.empty()) mbedtls_platform_zeroize(&value[0], value.size());
+  }
+};
+struct SecretBytesGuard {
+  Bytes& value;
+  ~SecretBytesGuard() {
+    if (!value.empty()) mbedtls_platform_zeroize(value.data(), value.size());
+  }
+};
 template <typename T> Result<T> Failure() {
   return Result<T>::Failure(StorageError::kInvalidData,"Secure session unavailable or invalid");
 }
@@ -56,12 +69,14 @@ class Parser {
 }
 Result<void> SecureSessionRepository::Save(const StoredSession& session) const {
   if(!unlock_) return FailSave();
-  const auto pass=unlock_();
+  auto pass=unlock_();
+  SecretStringGuard pass_guard{pass};
   if(pass.size()<12 || session.steam_id==0 || session.refresh_token.empty() ||
      session.account_name.size()>kNameLimit ||
      session.refresh_token.size()>kTokenLimit ||
      session.access_token.size()>kTokenLimit) return FailSave();
   Bytes payload;
+  SecretBytesGuard payload_guard{payload};
   U32(payload,2);
   U64(payload,session.steam_id);
   U32(payload,session.cell_id?1:0);
@@ -87,6 +102,7 @@ Result<std::optional<StoredSession>> SecureSessionRepository::Load() const {
   if(pass.size()<12) return Failure<std::optional<StoredSession>>();
   auto plaintext=OpenSession(data.value(),pass);
   if(!plaintext.ok()) return Failure<std::optional<StoredSession>>();
+  SecretBytesGuard plaintext_guard{plaintext.value()};
   Parser reader(plaintext.value());
   std::uint32_t version=0,cell_flag=0;
   StoredSession result;
