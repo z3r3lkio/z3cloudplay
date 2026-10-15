@@ -1,7 +1,7 @@
 name: Secure Vault Crypto Tests
 on:
   push:
-    branches: [main]
+    branches: [main, feature/persistent-encrypted-sessions]
     paths:
       - 'src/steam/secure_session_vault.*'
       - 'src/steam/secure_session_repository.*'
