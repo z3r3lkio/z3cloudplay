@@ -18,7 +18,7 @@ file(READ "${PARAM_SOURCE}" param)
 string(JSON param SET "${param}" titleId "\"${TITLE_ID}\"")
 string(SUBSTRING "${TITLE_ID}" 4 5 concept_id)
 string(JSON param SET "${param}" conceptId "\"${concept_id}\"")
-string(JSON param SET "${param}" contentId "\"UP9000-${TITLE_ID}_00-Z3CLOUDPLAYLAUNCHER1\"")
+string(JSON param SET "${param}" contentId "\"UP9000-${TITLE_ID}_00-Z3CLOUDPLAY00001\"")
 string(JSON param SET "${param}" localizedParameters en-US titleName "\"${TITLE_NAME}\"")
 # The package version follows the project version: major.minor.patch as MM.mmm.ppp (0.2.0 is 00.002.000), so
 # every release has its own value and later releases sort higher.
