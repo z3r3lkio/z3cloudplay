@@ -8,6 +8,13 @@ The imported authentication implementation currently persists Steam refresh and 
 
 A standalone vault has been added under `src/steam/secure_session_vault.{h,cpp}`, with AES-256-GCM, randomly generated salts and nonces, PBKDF2-HMAC-SHA256 (600,000 rounds), authenticated metadata, and generic error responses. A standalone test was added and registered in CMake, but it has **not yet been successfully executed or verified on PS5**. The vault is **not connected to Steam session persistence**. The existing `session.v1` remains plaintext.
 
+An isolated `SecureSessionRepository` has also been added at
+`src/steam/secure_session_repository.{h,cpp}`. It writes a new `session.v2`
+encrypted container, has no legacy plaintext fallback, and removes legacy
+session files on sign-out. Its passphrase callback must be wired to a masked
+PS5 unlock UI before it replaces the production repository. Tests for this
+repository passed on Linux (GitHub Actions run 38723730148).
+
 The KDF uses PBKDF2 as a compatibility implementation, **not Argon2id**. This is a staged change, not a security release.
 
 ## Required changes before a security release
