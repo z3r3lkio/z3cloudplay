@@ -39,7 +39,7 @@ jobs:
         run: /tmp/z3cloudplay-secure-repository-test
       - name: Check PS5 credential policy
         run: |
-          python3 -c 'from pathlib import Path; s=Path("src/homebrew/ps5.cpp").read_text(); assert "EphemeralSessionRepository sessions;" in s; assert "LocalSessionRepository sessions(" not in s; assert "credential_cleanup.Remove(" in s'
+          python3 -c 'from pathlib import Path; s=Path("src/homebrew/ps5.cpp").read_text(); assert "SecureSessionRepository sessions(" in s; assert "LocalSessionRepository sessions(" not in s; assert "credential_cleanup.Remove(" in s'
       - name: Guard passphrase UI rendering
         run: |
           python3 - <<'PY'
