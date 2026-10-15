@@ -44,7 +44,7 @@ struct InstallProgress {
 };
 
 struct DownloadTuning {
-  int slots = 4;
+  int slots = 6;
   int ahead_files = 256;
 };
 
