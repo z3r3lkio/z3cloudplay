@@ -12,8 +12,7 @@ for item in source.iterdir():
     if item.name==".git": continue
     target=dest/item.name
     if item.is_dir():
-        if target.exists(): shutil.rmtree(target)
-        shutil.copytree(item,target,symlinks=True)
+        shutil.copytree(item,target,symlinks=True,dirs_exist_ok=True)
     else: shutil.copy2(item,target)
 # Modify first-party code and docs only. Do not rewrite third party or fixtures.
 skip={"third_party","fixtures","runtime","assets"}
