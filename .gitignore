@@ -1,0 +1,8 @@
+/build/
+/.deps/
+/deps/
+/.worktrees/
+.DS_Store
+/.env
+__pycache__/
+*.pyc

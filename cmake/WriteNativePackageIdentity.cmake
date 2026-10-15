@@ -1,0 +1,10 @@
+if(NOT DEFINED APP_DIR OR NOT TITLE_ID MATCHES "^FAKE[0-9][0-9][0-9][0-9][0-9]$")
+    message(FATAL_ERROR "APP_DIR and a canonical native TITLE_ID are required")
+endif()
+if(NOT EXISTS "${APP_DIR}/eboot.bin" OR IS_DIRECTORY "${APP_DIR}/eboot.bin" OR IS_SYMLINK "${APP_DIR}/eboot.bin")
+    message(FATAL_ERROR "A regular signed eboot.bin is required")
+endif()
+file(SHA256 "${APP_DIR}/eboot.bin" signed_digest)
+file(MAKE_DIRECTORY "${APP_DIR}/logs" "${APP_DIR}/z3cloudplay-data")
+file(WRITE "${APP_DIR}/z3cloudplay-package.identity"
+    "z3cloudplay-native/1\n${TITLE_ID}\n${signed_digest}\n")

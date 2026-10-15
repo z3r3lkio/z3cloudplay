@@ -1,0 +1,37 @@
+{
+  "version": 5,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 24,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "homebrew-host",
+      "displayName": "macOS host",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/homebrew-host",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "Z3CLOUDPLAY_UI_SIMULATION": "OFF",
+        "Z3CLOUDPLAY_PLATFORM_PS5": "OFF"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "homebrew-host",
+      "configurePreset": "homebrew-host"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "homebrew-host",
+      "configurePreset": "homebrew-host",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

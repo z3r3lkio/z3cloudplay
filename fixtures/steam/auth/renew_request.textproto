@@ -1,0 +1,3 @@
+refresh_token: "synthetic.refresh.token"
+steamid: 0x0110000100001234
+renewal_type: k_ETokenRenewalType_None

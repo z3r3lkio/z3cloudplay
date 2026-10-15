@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Compatibility list
+    url: https://github.com/leolobato/z3cloudplay-ps5/blob/main/COMPATIBILITY.md
+    about: See which games have been tested before you report one.

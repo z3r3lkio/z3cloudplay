@@ -1,0 +1,21 @@
+{
+  "response": {
+    "game_count": 2,
+    "games": [
+      {
+        "appid": 1001,
+        "name": "Synthetic One",
+        "img_icon_url": "0123456789abcdef0123456789abcdef01234567",
+        "playtime_forever": 90,
+        "rtime_last_played": 1700000000
+      },
+      {
+        "appid": 1002,
+        "name": "Synthetic Two",
+        "img_icon_url": "89abcdef0123456789abcdef0123456789abcdef",
+        "playtime_forever": 0,
+        "rtime_last_played": 0
+      }
+    ]
+  }
+}

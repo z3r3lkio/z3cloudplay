@@ -1,0 +1,703 @@
+{
+  "schema_version": 1,
+  "fixture_version": "playden-ui-v1",
+  "clock": 1760000000,
+  "games": [
+    {
+      "id": 900001,
+      "title": "A Very Long Journey Beyond the Last Observatory: Director’s Synthetic Edition",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. Long description with accessible scrolling. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster1",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Adventure"
+      ],
+      "controller_support": "full",
+      "download_bytes": 2147483648,
+      "installed_bytes": 4294967296,
+      "added_at": 1760000000,
+      "last_played": 1760000000,
+      "playtime_minutes": 0
+    },
+    {
+      "id": 900002,
+      "title": "Crème Brûlée & Clockwork — déjà vu",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster2",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Puzzle"
+      ],
+      "controller_support": "partial",
+      "download_bytes": 3221225472,
+      "installed_bytes": 5368709120,
+      "added_at": 1760086400,
+      "last_played": 1759913600,
+      "playtime_minutes": 37
+    },
+    {
+      "id": 900003,
+      "title": "Αστρικό Ταξίδι: Η τελευταία τροχιά",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster3",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Action"
+      ],
+      "controller_support": "unknown",
+      "download_bytes": 4294967296,
+      "installed_bytes": 6442450944,
+      "added_at": 1760172800,
+      "last_played": 1759827200,
+      "playtime_minutes": 74
+    },
+    {
+      "id": 900004,
+      "title": "Звёздный архив: Последняя орбита",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster4",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Strategy"
+      ],
+      "controller_support": "full",
+      "download_bytes": 5368709120,
+      "installed_bytes": 7516192768,
+      "added_at": 1760259200,
+      "last_played": 1759740800,
+      "playtime_minutes": 111
+    },
+    {
+      "id": 900005,
+      "title": "Mañana, São Paulo! ¿Dónde está la estación?",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster5",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Adventure"
+      ],
+      "controller_support": "partial",
+      "download_bytes": 6442450944,
+      "installed_bytes": 8589934592,
+      "added_at": 1760345600,
+      "last_played": 1759654400,
+      "playtime_minutes": 148
+    },
+    {
+      "id": 900006,
+      "title": "Łódź Nights / Praha Days",
+      "description": null,
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster6",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Puzzle"
+      ],
+      "controller_support": "unknown",
+      "download_bytes": null,
+      "installed_bytes": null,
+      "added_at": 1760432000,
+      "last_played": 1759568000,
+      "playtime_minutes": 185
+    },
+    {
+      "id": 900007,
+      "title": "星の旅：最後の軌道",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster7",
+        "hero": "hero",
+        "logo": null,
+        "state": "delayed"
+      },
+      "genres": [
+        "Action"
+      ],
+      "controller_support": "full",
+      "download_bytes": 3221225472,
+      "installed_bytes": 5368709120,
+      "added_at": 1760518400,
+      "last_played": 1759481600,
+      "playtime_minutes": 222
+    },
+    {
+      "id": 900008,
+      "title": "رحلة النجوم: المدار الأخير",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": null,
+        "hero": "hero",
+        "logo": null,
+        "state": "failed"
+      },
+      "genres": [
+        "Strategy"
+      ],
+      "controller_support": "partial",
+      "download_bytes": 4294967296,
+      "installed_bytes": 6442450944,
+      "added_at": 1760604800,
+      "last_played": 1759395200,
+      "playtime_minutes": 259
+    },
+    {
+      "id": 900009,
+      "title": "Amber Valley",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster1",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Adventure"
+      ],
+      "controller_support": "unknown",
+      "download_bytes": 5368709120,
+      "installed_bytes": 7516192768,
+      "added_at": 1760691200,
+      "last_played": null,
+      "playtime_minutes": null
+    },
+    {
+      "id": 900010,
+      "title": "Night Orchard",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster2",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Puzzle"
+      ],
+      "controller_support": "full",
+      "download_bytes": 6442450944,
+      "installed_bytes": 8589934592,
+      "added_at": 1760777600,
+      "last_played": null,
+      "playtime_minutes": null
+    },
+    {
+      "id": 900011,
+      "title": "Paper Satellites",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster3",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Action"
+      ],
+      "controller_support": "partial",
+      "download_bytes": 2147483648,
+      "installed_bytes": 4294967296,
+      "added_at": 1760864000,
+      "last_played": null,
+      "playtime_minutes": null
+    },
+    {
+      "id": 900012,
+      "title": "Velvet Engines",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster4",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Strategy"
+      ],
+      "controller_support": "unknown",
+      "download_bytes": 3221225472,
+      "installed_bytes": 5368709120,
+      "added_at": 1760950400,
+      "last_played": null,
+      "playtime_minutes": null
+    },
+    {
+      "id": 900013,
+      "title": "Quiet Harbor",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster5",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Adventure"
+      ],
+      "controller_support": "full",
+      "download_bytes": 4294967296,
+      "installed_bytes": 6442450944,
+      "added_at": 1761036800,
+      "last_played": null,
+      "playtime_minutes": null
+    },
+    {
+      "id": 900014,
+      "title": "Copper Mountain",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster6",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Puzzle"
+      ],
+      "controller_support": "partial",
+      "download_bytes": 5368709120,
+      "installed_bytes": 7516192768,
+      "added_at": 1761123200,
+      "last_played": null,
+      "playtime_minutes": null
+    },
+    {
+      "id": 900015,
+      "title": "Wandering Atlas",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster7",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Action"
+      ],
+      "controller_support": "unknown",
+      "download_bytes": 6442450944,
+      "installed_bytes": 8589934592,
+      "added_at": 1761209600,
+      "last_played": null,
+      "playtime_minutes": null
+    },
+    {
+      "id": 900016,
+      "title": "Moonlit Workshop",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster8",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Strategy"
+      ],
+      "controller_support": "full",
+      "download_bytes": 2147483648,
+      "installed_bytes": 4294967296,
+      "added_at": 1761296000,
+      "last_played": null,
+      "playtime_minutes": null
+    },
+    {
+      "id": 900017,
+      "title": "Lost Signals",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster1",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Adventure"
+      ],
+      "controller_support": "partial",
+      "download_bytes": 3221225472,
+      "installed_bytes": 5368709120,
+      "added_at": 1761382400,
+      "last_played": null,
+      "playtime_minutes": null
+    },
+    {
+      "id": 900018,
+      "title": "Golden Circuit",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster2",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Puzzle"
+      ],
+      "controller_support": "unknown",
+      "download_bytes": 4294967296,
+      "installed_bytes": 6442450944,
+      "added_at": 1761468800,
+      "last_played": null,
+      "playtime_minutes": null
+    },
+    {
+      "id": 900019,
+      "title": "Winter Garden",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster3",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Action"
+      ],
+      "controller_support": "full",
+      "download_bytes": 5368709120,
+      "installed_bytes": 7516192768,
+      "added_at": 1761555200,
+      "last_played": null,
+      "playtime_minutes": null
+    },
+    {
+      "id": 900020,
+      "title": "Glass Compass",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster4",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Strategy"
+      ],
+      "controller_support": "partial",
+      "download_bytes": 6442450944,
+      "installed_bytes": 8589934592,
+      "added_at": 1761641600,
+      "last_played": null,
+      "playtime_minutes": null
+    },
+    {
+      "id": 900021,
+      "title": "Tiny Astronaut",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster5",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Adventure"
+      ],
+      "controller_support": "unknown",
+      "download_bytes": 2147483648,
+      "installed_bytes": 4294967296,
+      "added_at": 1761728000,
+      "last_played": null,
+      "playtime_minutes": null
+    },
+    {
+      "id": 900022,
+      "title": "Forest Letters",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster6",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Puzzle"
+      ],
+      "controller_support": "full",
+      "download_bytes": 3221225472,
+      "installed_bytes": 5368709120,
+      "added_at": 1761814400,
+      "last_played": null,
+      "playtime_minutes": null
+    },
+    {
+      "id": 900023,
+      "title": "Cloud Cartographer",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster7",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Action"
+      ],
+      "controller_support": "partial",
+      "download_bytes": 4294967296,
+      "installed_bytes": 6442450944,
+      "added_at": 1761900800,
+      "last_played": null,
+      "playtime_minutes": null
+    },
+    {
+      "id": 900024,
+      "title": "Last Lantern",
+      "description": "A synthetic adventure through a hand-crafted world. Explore, discover and return to the places that matter. UI fixture only; this is not an owned game. ",
+      "source": "Steam / Windows",
+      "art": {
+        "cover": "poster8",
+        "hero": "hero",
+        "logo": null,
+        "state": "ready"
+      },
+      "genres": [
+        "Strategy"
+      ],
+      "controller_support": "unknown",
+      "download_bytes": 5368709120,
+      "installed_bytes": 7516192768,
+      "added_at": 1761987200,
+      "last_played": null,
+      "playtime_minutes": null
+    }
+  ],
+  "account": {
+    "id": "fixture-account-a",
+    "display_name": "Fixture Player",
+    "state": "signed-in",
+    "challenge_expiry": null,
+    "last_sync": 1760000000,
+    "cache_available": true,
+    "error": null
+  },
+  "organization": {
+    "favorites": [
+      900001,
+      900005
+    ],
+    "hidden": [
+      900024
+    ],
+    "collections": [
+      {
+        "id": "collection-1",
+        "name": "Weekend adventures",
+        "pinned": true,
+        "game_ids": [
+          900001,
+          900005,
+          900007
+        ]
+      }
+    ],
+    "ratings": {},
+    "notes": {},
+    "query": "",
+    "scope": "all",
+    "sort": "name",
+    "filters": {}
+  },
+  "installations": [
+    {
+      "game_id": 900001,
+      "volume_id": "external",
+      "available": true,
+      "installed_bytes": 4294967296,
+      "runtime_ready": false,
+      "saves_preserved": true
+    },
+    {
+      "game_id": 900002,
+      "volume_id": "external",
+      "available": true,
+      "installed_bytes": 5368709120,
+      "runtime_ready": false,
+      "saves_preserved": true
+    },
+    {
+      "game_id": 900003,
+      "volume_id": "external",
+      "available": true,
+      "installed_bytes": 6442450944,
+      "runtime_ready": false,
+      "saves_preserved": true
+    },
+    {
+      "game_id": 900004,
+      "volume_id": "external",
+      "available": true,
+      "installed_bytes": 7516192768,
+      "runtime_ready": false,
+      "saves_preserved": true
+    },
+    {
+      "game_id": 900005,
+      "volume_id": "external",
+      "available": true,
+      "installed_bytes": 8589934592,
+      "runtime_ready": false,
+      "saves_preserved": true
+    }
+  ],
+  "volumes": [
+    {
+      "id": "internal",
+      "label": "Console fixture storage",
+      "capacity_bytes": 536870912000,
+      "used_bytes": 510027366400,
+      "reserved_bytes": 1073741824,
+      "available": true,
+      "writable": true,
+      "path": null
+    },
+    {
+      "id": "external",
+      "label": "USB fixture library",
+      "capacity_bytes": 1073741824000,
+      "used_bytes": 214748364800,
+      "reserved_bytes": 0,
+      "available": true,
+      "writable": true,
+      "path": null
+    },
+    {
+      "id": "readonly",
+      "label": "Read-only fixture archive",
+      "capacity_bytes": 107374182400000,
+      "used_bytes": 0,
+      "reserved_bytes": 0,
+      "available": true,
+      "writable": false,
+      "path": null
+    }
+  ],
+  "jobs": [
+    {
+      "id": "job-1",
+      "game_id": 900009,
+      "volume_id": "external",
+      "kind": "install",
+      "order": 0,
+      "stage": "download",
+      "state": "downloading",
+      "completed_bytes": 461708984,
+      "total_bytes": 1073741824,
+      "rate_bytes_per_second": 67108864,
+      "eta_seconds": null,
+      "failure": null,
+      "retry_target": "download"
+    },
+    {
+      "id": "job-2",
+      "game_id": 900010,
+      "volume_id": "external",
+      "kind": "install",
+      "order": 1,
+      "stage": "queued",
+      "state": "queued",
+      "completed_bytes": 0,
+      "total_bytes": 1073741824,
+      "rate_bytes_per_second": null,
+      "eta_seconds": null,
+      "failure": null,
+      "retry_target": "download"
+    },
+    {
+      "id": "job-3",
+      "game_id": 900011,
+      "volume_id": "external",
+      "kind": "install",
+      "order": 2,
+      "stage": "queued",
+      "state": "queued",
+      "completed_bytes": 0,
+      "total_bytes": 1073741824,
+      "rate_bytes_per_second": null,
+      "eta_seconds": null,
+      "failure": null,
+      "retry_target": "download"
+    }
+  ],
+  "profiles": [
+    {
+      "id": "default",
+      "name": "Default",
+      "summary": "1920×1080 · 60 FPS · VSync on",
+      "values": {
+        "resolution": "1920×1080",
+        "frame_limit": "60",
+        "vsync": true,
+        "launch_arguments": ""
+      }
+    },
+    {
+      "id": "custom",
+      "name": "Custom",
+      "summary": "Default values plus your overrides",
+      "values": {}
+    }
+  ],
+  "settings": {
+    "resolution_choices": [
+      "1280×720",
+      "1920×1080",
+      "3840×2160"
+    ],
+    "frame_limit_choices": [
+      "30",
+      "60",
+      "Unlimited"
+    ],
+    "graphics_backend": {
+      "enabled": false,
+      "reason": "Simulated settings; PS5 runtime support is unavailable."
+    }
+  }
+}

@@ -1,0 +1,1 @@
+˜®Ø¨Áâ„‰(https://synthetic.invalid/qr/challenge-b(

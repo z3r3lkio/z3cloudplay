@@ -1,0 +1,10 @@
+client_id: 0x0102030405060708
+challenge_url: "https://synthetic.invalid/qr/challenge-a"
+request_id: "\\020 0@P"
+interval: 2.5
+allowed_confirmations { confirmation_type: k_EAuthSessionGuardType_DeviceConfirmation }
+allowed_confirmations {
+  confirmation_type: k_EAuthSessionGuardType_EmailConfirmation
+  associated_message: "example.invalid"
+}
+version: 3

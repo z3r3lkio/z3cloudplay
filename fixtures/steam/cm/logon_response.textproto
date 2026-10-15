@@ -1,0 +1,4 @@
+eresult: 1
+legacy_out_of_game_heartbeat_seconds: 9
+heartbeat_seconds: 12
+cell_id: 7

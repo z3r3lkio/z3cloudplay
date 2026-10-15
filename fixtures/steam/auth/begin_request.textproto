@@ -1,0 +1,6 @@
+device_details {
+  device_friendly_name: "Playden Synthetic Device"
+  platform_type: k_EAuthTokenPlatformType_SteamClient
+  os_type: 0
+}
+website_id: "Client"

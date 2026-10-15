@@ -1,0 +1,44 @@
+{
+  "data_policy": "Synthetic values only; no real depot, key or content data.",
+  "depot_id": 4242001,
+  "expected_files": [
+    {
+      "chunks": [
+        1048576,
+        1048576,
+        1048576,
+        123
+      ],
+      "flags": 32,
+      "path": "bin/game.exe",
+      "size": 3145851
+    },
+    {
+      "chunks": [],
+      "flags": 0,
+      "path": "data/empty.dat",
+      "size": 0
+    },
+    {
+      "chunks": [
+        1000
+      ],
+      "flags": 0,
+      "path": "readme.txt",
+      "size": 1000
+    }
+  ],
+  "fixtures_sha256": {
+    "encrypted_names.tsv": "e15d961186e40bfbe532f9cec19cb4608d59c29d504e4cbc19a61ced24faedb9",
+    "manifest_encrypted.bin": "cb42af69460401e013c5ae063aadfd7d22778c86850ebae98aa372f000f79ddf",
+    "manifest_encrypted_deflated.zip": "9d357e384673cc0ee3129ddf3e27ae9bdeb228fd41545376fd36cc7bc734ee9e",
+    "manifest_encrypted_stored.zip": "e097b8a8f53338680e74920a95c5e3e8dd61712d3b783c5bb2258e1a19f33f0f",
+    "manifest_plain.bin": "f09e93c98717555adf57d82bc37a98e1fa5f320b8f8b8fd0c1cccdc2d3ffebdf",
+    "manifest_plain_deflated.zip": "863a801262dbb1d95f74ae5e2562c7171a358eafe29bef20b6776b69522ab910",
+    "manifest_plain_stored.zip": "250a58972c6c8f12cb398a3154c0b4b33c352b1e15fb510b8f438e286b9c69f7"
+  },
+  "generator": "fixtures/steam/proto/generate_manifest_fixtures.py (protoc --encode)",
+  "gid": 7234567890123456789,
+  "iv_hex": "a0a1a2a3a4a5a6a7a8a9aaabacadaeaf",
+  "key_hex": "101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f"
+}

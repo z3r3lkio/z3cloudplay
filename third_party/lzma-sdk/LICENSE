@@ -1,0 +1,8 @@
+LZMA SDK (LzmaDec.c, LzmaDec.h, 7zTypes.h, Precomp.h, Compiler.h)
+Author: Igor Pavlov
+
+The LZMA SDK is placed in the public domain. Each copied source file carries
+the header "Igor Pavlov : Public domain". Anyone is free to copy, modify,
+publish, use, compile, sell, or distribute the original LZMA SDK code, either
+in source code form or as a compiled binary, for any purpose, commercial or
+non-commercial, and by any means.

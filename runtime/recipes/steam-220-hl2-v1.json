@@ -1,0 +1,23 @@
+{
+  "recipe_id": "steam-220-hl2-v1",
+  "recipe_version": 1,
+  "app_id": 220,
+  "name": "Half-Life 2",
+  "launch_entries": [
+    {"id": "hl2", "label": "Half-Life 2", "executable": "hl2.exe"}
+  ],
+  "arguments": "-game hl2 -steam {resolution} -novid +exec 360controller.cfg +joystick 1",
+  "resolution_arguments": "-w {w} -h {h}",
+  "dll_overrides": "d3d9=n",
+  "architecture": "pe32",
+  "runtime": "wine-wow64",
+  "prefix": "game",
+  "graphics": "dxvk",
+  "requirements": {"audio": "ps5"},
+  "defaults": {
+    "resolution": "1920x1080",
+    "controller": "xinput",
+    "button.options": "escape"
+  },
+  "locked": ["graphics"]
+}

@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "assets": [
+    {
+      "key": "hero",
+      "path": "assets/art/hero.png",
+      "bytes": 185684,
+      "sha256": "cc9e9d19e68d375254aae2fb700e93d3267f7a130425365698e0eef72d063b8a"
+    },
+    {
+      "key": "poster1",
+      "path": "assets/art/poster1.png",
+      "bytes": 35848,
+      "sha256": "afd2a68c3549257a1f781dc7475858792ce1132b0951ea06f6f3831a829a25fd"
+    },
+    {
+      "key": "poster2",
+      "path": "assets/art/poster2.png",
+      "bytes": 40287,
+      "sha256": "d4296677cfff516600d06faa426d2203d6265cdb15f8eafbaa4716a0c3759efd"
+    },
+    {
+      "key": "poster3",
+      "path": "assets/art/poster3.png",
+      "bytes": 43104,
+      "sha256": "028885697eb454dbc3f66e10cef786f878e2b5ad37d456b9106c7dfbaea55bdc"
+    },
+    {
+      "key": "poster4",
+      "path": "assets/art/poster4.png",
+      "bytes": 36819,
+      "sha256": "803147d90e9c2da2afb8f49427e90ed1d25da54b61a03c49a193d3a4c9c1de8a"
+    },
+    {
+      "key": "poster5",
+      "path": "assets/art/poster5.png",
+      "bytes": 33872,
+      "sha256": "cb4e976cac8c05d13575bb038e79c9a5dee968242356c614c6c142980c29b0d3"
+    },
+    {
+      "key": "poster6",
+      "path": "assets/art/poster6.png",
+      "bytes": 44025,
+      "sha256": "6276023cb82fff5bd086ca780fb5e078acebaefbbbf2a56665d40c2afe56d3f6"
+    },
+    {
+      "key": "poster7",
+      "path": "assets/art/poster7.png",
+      "bytes": 38807,
+      "sha256": "71d7385939c1102eaf4790831fad2dceae6730bc67999ffff43ec362b525e1d6"
+    },
+    {
+      "key": "poster8",
+      "path": "assets/art/poster8.png",
+      "bytes": 46743,
+      "sha256": "8807fb95bfb149b487146c4722bad990da210a6ea4aa5935c6d85a23ff7eb2d1"
+    },
+    {
+      "key": "Barlow-Medium",
+      "path": "assets/fonts/Barlow-Medium.ttf",
+      "bytes": 103536,
+      "sha256": "f8906f762cb73dca441da034bc363b2d8e2e68bc10d5c05e58717646c20cc4b4"
+    },
+    {
+      "key": "Barlow-Regular",
+      "path": "assets/fonts/Barlow-Regular.ttf",
+      "bytes": 104068,
+      "sha256": "95aa02c7c43096e0dd44d787ba6216864a67157e402adab59b35572e0c1577ea"
+    },
+    {
+      "key": "Barlow-SemiBold",
+      "path": "assets/fonts/Barlow-SemiBold.ttf",
+      "bytes": 108348,
+      "sha256": "86577cb32f8abe3673db53ca0f4221e6856751a4f6730c867e00f720f8bb1fc5"
+    },
+    {
+      "key": "BarlowCondensed-Medium",
+      "path": "assets/fonts/BarlowCondensed-Medium.ttf",
+      "bytes": 103360,
+      "sha256": "262bd143292ce479ee0cd09a42b47ab173fca8e9c6eb5ed0b5c8a845bc371d17"
+    },
+    {
+      "key": "BarlowCondensed-SemiBold",
+      "path": "assets/fonts/BarlowCondensed-SemiBold.ttf",
+      "bytes": 109428,
+      "sha256": "7b619d14bc2327509a9ef32b0890f709626f7ecc9ff61191c2a4314c5499d2d9"
+    },
+    {
+      "key": "NotoSansArabic",
+      "path": "assets/fonts/NotoSansArabic.ttf",
+      "bytes": 844676,
+      "sha256": "63111b5b2e074dd48cc67692e0a2726d86ee94c1c37fe8598257b7b4e87e869e"
+    },
+    {
+      "key": "NotoSansCJKsc-Regular",
+      "path": "assets/fonts/NotoSansCJKsc-Regular.otf",
+      "bytes": 16437364,
+      "sha256": "2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b"
+    },
+    {
+      "key": "barlow-OFL",
+      "path": "assets/fonts/barlow-OFL.txt",
+      "bytes": 4377,
+      "sha256": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f"
+    },
+    {
+      "key": "barlowcondensed-OFL",
+      "path": "assets/fonts/barlowcondensed-OFL.txt",
+      "bytes": 4377,
+      "sha256": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f"
+    },
+    {
+      "key": "noto-arabic-OFL",
+      "path": "assets/fonts/noto-arabic-OFL.txt",
+      "bytes": 4382,
+      "sha256": "07fc70bfeb985cc1a87a8587d0a0c80bab11c86c9dc3fd95b6f0cb332f983e96"
+    },
+    {
+      "key": "noto-cjk-LICENSE",
+      "path": "assets/fonts/noto-cjk-LICENSE.txt",
+      "bytes": 4301,
+      "sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2"
+    },
+    {
+      "key": "circle",
+      "path": "assets/glyphs/circle.svg",
+      "bytes": 237,
+      "sha256": "f047617196db73415f9e463a58aadddefdabb5594478c0fc8fbcdfd6dcf9791a"
+    },
+    {
+      "key": "cross",
+      "path": "assets/glyphs/cross.svg",
+      "bytes": 217,
+      "sha256": "ac924a11802096d5f3014c476888c25860508fadc15b14e1552a29a6982eb766"
+    },
+    {
+      "key": "square",
+      "path": "assets/glyphs/square.svg",
+      "bytes": 210,
+      "sha256": "f59115ef2bef1d83eb62bed42348ade4e3c7cf3f08e60410a0f67d24563554f5"
+    },
+    {
+      "key": "triangle",
+      "path": "assets/glyphs/triangle.svg",
+      "bytes": 211,
+      "sha256": "d19d5e8485ed5fb985edbc8bf58a56bfcbf11ef5eae3b3acccc4b496df73bceb"
+    }
+  ],
+  "font_fallback": [
+    "NotoSansCJKsc-Regular.otf",
+    "NotoSansArabic.ttf"
+  ],
+  "font_sources": {
+    "Barlow": "playden de952b3d49167e635945ada88cd8533e07d40d44 App/Resources/Fonts",
+    "NotoCJK": "notofonts/noto-cjk Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf",
+    "NotoArabic": "google/fonts ofl/notosansarabic"
+  },
+  "art_source": "launcher baseline assets/ui/art; identical synthetic bytes",
+  "glyph_geometry": "32x32 SVG stroked path, no Unicode face-button approximations"
+}

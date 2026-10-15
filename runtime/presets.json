@@ -1,0 +1,43 @@
+{
+  "presets": [
+    {
+      "id": "playden-default",
+      "name": "Playden default",
+      "try_when": "Every game starts here. Uses the recipe's values.",
+      "short_hint": "Most games",
+      "settings": {}
+    },
+    {
+      "id": "mouse-driven",
+      "name": "Mouse-driven game",
+      "try_when": "The game has no controller support and is played with a mouse: strategy, adventure and menu-heavy games.",
+      "short_hint": "Point and click",
+      "settings": {
+        "controller": "keyboard",
+        "controller_preset": "mouse",
+        "pointer_stick": "left_stick",
+        "pointer_speed": "900"
+      }
+    },
+    {
+      "id": "keyboard-on-controller",
+      "name": "Keyboard game on a controller",
+      "try_when": "The game reads only the keyboard. Buttons send the keys most games use.",
+      "short_hint": "No pad support",
+      "settings": {
+        "controller": "keyboard",
+        "controller_preset": "gamepad"
+      }
+    },
+    {
+      "id": "opengl-game",
+      "name": "OpenGL game",
+      "try_when": "Older engines that draw with OpenGL, such as id Tech and GoldSrc games.",
+      "short_hint": "Older engines",
+      "settings": {
+        "refresh": "60",
+        "opengl_thread": "off"
+      }
+    }
+  ]
+}

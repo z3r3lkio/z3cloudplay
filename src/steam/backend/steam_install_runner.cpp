@@ -1,0 +1,150 @@
+#include "steam/backend/steam_install_runner.h"
+
+#include "runtime/steamworks.h"
+#include "steam/backend/app_info.h"
+
+#include <set>
+#include <charconv>
+
+namespace z3cloudplay::steam {
+
+void LogInstallTrace(const InstallLogFn& log, GameId app, const char* marker) {
+  if (!log) return;
+  if (std::string(marker) == "journal-reset") log(app, "journal", "reset", "");
+  else if (std::string(marker) == "journal-legacy") log(app, "journal", "legacy", "");
+  else log(app, "trace", marker, "");
+}
+
+std::string FormatInstallStats(const char* phase, const InstallStats& stats) {
+  std::string detail;
+  const auto add = [&](const char* key, std::uint64_t value) {
+    if (!detail.empty()) detail += ' ';
+    detail += key; detail += '='; detail += std::to_string(value);
+  };
+  add("files_total", stats.files_total); add("download_total", stats.download_total);
+  if (std::string(phase) == "shape") {
+    add("chunks_pending", stats.chunks_pending); add("files_pending", stats.files_pending);
+    add("bytes_pending", stats.bytes_pending);
+    add("slots", stats.slots); add("ahead", stats.ahead_files);
+    return detail;
+  }
+  add("dl_ms", stats.download_ms); add("cb", stats.compressed_bytes); add("ob", stats.original_bytes);
+  add("ch", stats.chunks_done); add("sk", stats.chunks_skipped);
+  add("fc", stats.files_created); add("dc", stats.folders_created);
+  add("fetch", stats.fetch_ms); add("proc", stats.process_ms); add("create", stats.create_ms);
+  add("write", stats.write_ms); add("jrnl", stats.journal_ms); add("back", stats.backoff_ms);
+  add("req", stats.requests); add("conn", stats.new_connections);
+  add("res", stats.resolve_ms); add("tcp", stats.connect_ms); add("tls", stats.tls_ms); add("ttfb", stats.first_byte_ms);
+  add("retry", stats.chunk_retries); add("bad", stats.corrupt_retries);
+  add("slots", stats.slots); add("reuse", stats.reuse);
+  add("waiting", stats.peak_waiting); add("active", stats.peak_active);
+  add("access", stats.access_ms); add("servers", stats.servers_ms); add("manifest", stats.manifests_ms); add("prep", stats.prepare_ms);
+  add("http_ms", stats.total_ms); add("http_b", stats.bytes); add("fail", stats.failures);
+  return detail;
+}
+
+bool SteamInstallRunner::Remove(const std::string& root) {
+  const bool ok = RemoveManagedInstall(root);
+  const auto slash = root.rfind('/');
+  const auto name = root.substr(slash == std::string::npos ? 0 : slash + 1);
+  GameId app = 0;
+  const auto parsed = std::from_chars(name.data(), name.data() + name.size(), app);
+  if (log_ && app != 0 && parsed.ec == std::errc{} && parsed.ptr == name.data() + name.size())
+    log_(app, "install-removal", "done", ok ? "ok=1" : "ok=0");
+  return ok;
+}
+
+const char* InstallFailureText(InstallError error) {
+  switch (error) {
+    case InstallError::kNone: return "";
+    case InstallError::kCanceled: return "";
+    case InstallError::kNoSession: return "Sign in to Steam to install.";
+    case InstallError::kRejected: return "Steam refused access to this game's content.";
+    case InstallError::kNetwork: return "Network problem. Resume to try again.";
+    case InstallError::kCorrupt: return "Downloaded content failed verification. Resume to try again.";
+    case InstallError::kNoSpace: return "Not enough free space.";
+    case InstallError::kStorage: return "Could not write the game files.";
+    case InstallError::kProtocol: return "Steam returned unexpected data.";
+  }
+  return "Install failed.";
+}
+
+InstallRunner::Result SteamInstallRunner::Install(const StoredSession& session, GameId id, const std::string& root,
+                                                  const std::atomic<bool>& cancel,
+                                                  const std::function<void(std::uint64_t, std::uint64_t, std::uint64_t)>& progress) {
+  Result result;
+  current_app_.store(id);
+  installer_.SetTuning(tuning_ ? tuning_() : DownloadTuning{});
+  auto log = [this, id](const char* step, const char* category, const char* detail) {
+    if (log_) log_(id, step, category, detail);
+  };
+  const auto info = cm_.FetchAppInfo(session, {id}, cancel);
+  if (cancel.load()) {
+    result.canceled = true;
+    return result;
+  }
+  if (!info.ok()) {
+    log("app_info", CmErrorName(info.error), "");
+    result.failure = "Could not reach Steam. Resume to try again.";
+    result.retry_later = info.error == CmError::kNetwork || info.error == CmError::kTimeout;
+    return result;
+  }
+  const auto buffer = info.buffers.find(id);
+  const auto app = buffer == info.buffers.end() ? std::nullopt : ParseAppInfo(id, buffer->second);
+  if (!app) {
+    log("app_info", "missing", buffer == info.buffers.end() ? "no buffer" : "unparsable");
+    result.failure = "Steam has no install details for this game.";
+    return result;
+  }
+  InstallTarget target;
+  target.app_id = id;
+  target.install_root = root;
+  std::string reason;
+  // Like the reference, only depots this account's licenses grant are installed.
+  const auto entitlements = cm_.FetchAcquisitionDates(session, cancel);
+  if (cancel.load()) {
+    result.canceled = true;
+    return result;
+  }
+  if (!entitlements.ok()) {
+    log("entitlements", CmErrorName(entitlements.error), "");
+    result.failure = "Could not read this account's licenses. Resume to try again.";
+    result.retry_later = entitlements.error == CmError::kNetwork || entitlements.error == CmError::kTimeout;
+    return result;
+  }
+  if (entitlements.skipped_packages)
+    log("entitlements", "partial", ("skipped_packages=" + std::to_string(entitlements.skipped_packages)).c_str());
+  std::set<std::uint32_t> owned_apps = entitlements.owned_apps;
+  owned_apps.insert(id);
+  if (!SelectDepots(*app, owned_apps, entitlements.owned_depots, &target.depots, &reason)) {
+    log("depots", "none", reason.c_str());
+    result.failure = "No Windows content to install.";
+    return result;
+  }
+  // Keep Steam's listing order: it is the depot mounting order.
+  std::vector<DepotInfo> ordered;
+  for (const auto& depot : app->depots)
+    for (const auto& selected : target.depots)
+      if (selected.id == depot.id) ordered.push_back(selected);
+  target.depots = ordered;
+  const auto outcome = installer_.Run(session, target, cancel, [&](const InstallProgress& state) {
+    if (progress) progress(state.download_done, state.download_total, state.held_bytes);
+  });
+  log("install", InstallErrorName(outcome.error), outcome.detail.c_str());
+  result.ok = outcome.error == InstallError::kNone;
+  if (result.ok) {
+    // What the Steamworks emulator needs later, while the licenses are at hand: installed depots and owned DLC.
+    std::vector<std::uint32_t> depots, dlc;
+    for (const auto& depot : target.depots) depots.push_back(depot.id);
+    for (const auto app_id : app->dlc_app_ids)
+      if (entitlements.owned_apps.count(app_id)) dlc.push_back(app_id);
+    if (!runtime::WriteSteamworksFacts(root, depots, dlc)) log("steamworks_facts", "write-failed", root.c_str());
+  }
+  result.canceled = outcome.error == InstallError::kCanceled;
+  result.retry_later = outcome.error == InstallError::kNetwork;
+  result.failure = InstallFailureText(outcome.error);
+  result.install_bytes = outcome.progress.install_total;
+  return result;
+}
+
+}  // namespace z3cloudplay::steam

@@ -1,0 +1,104 @@
+name: Game test report
+description: Tell us how a game ran on Z3CloudPlay, whether it worked or not.
+title: "[Test] <game name>"
+labels: ["test report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing! Reports of games that **work** help as much as reports of games that don't.
+        Check the [compatibility list](https://github.com/leolobato/z3cloudplay-ps5/blob/main/COMPATIBILITY.md) first. If the game is there, add what is new.
+
+        If the game did not work, collect the logs **after you start Z3CloudPlay once more** (Z3CloudPlay copies the
+        game's log when it starts):
+
+        ```sh
+        python3 tools/collect_logs.py --host <PS5 IP>
+        ```
+
+        Paste the table it prints into **Versions** and attach the zip below.
+        See the [sample report](https://github.com/leolobato/z3cloudplay-ps5/blob/main/docs/sample-test-report.md).
+  - type: input
+    id: game
+    attributes:
+      label: Game
+      description: The name and the Steam store link (the link has the app ID).
+      placeholder: "Vampire Survivors — https://store.steampowered.com/app/1794680"
+    validations:
+      required: true
+  - type: dropdown
+    id: status
+    attributes:
+      label: Result
+      options:
+        - "✅ Works: reaches the menu and plays"
+        - "🟡 Partial: plays, with a problem that gets in the way"
+        - "❌ Broken: starts, but is not playable"
+        - "❌ Does not start: back to Home, or stays on the spinner"
+        - "⛔ Refused: Z3CloudPlay would not prepare it (say below whether Try anyway or another Program helped)"
+        - "Download or preparation failed"
+    validations:
+      required: true
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions
+      description: Paste the table from `collect_logs.py`. Without it, give the firmware, the Z3CloudPlay commit and the kit.
+      placeholder: |
+        | Field | Value |
+        | --- | --- |
+        | firmware | 13.60 |
+        | kit runtime | ... |
+      render: markdown
+    validations:
+      required: true
+  - type: dropdown
+    id: storage
+    attributes:
+      label: Where the game is installed
+      options:
+        - Console storage
+        - exFAT USB drive
+        - Other (say below)
+    validations:
+      required: true
+  - type: checkboxes
+    id: input
+    attributes:
+      label: Controls
+      description: What did you play with? Tick all that apply.
+      options:
+        - label: DualSense, default (Xbox controller)
+        - label: DualSense, Mouse preset
+        - label: DualSense, Arrow keys preset
+        - label: USB mouse and keyboard
+  - type: textarea
+    id: settings
+    attributes:
+      label: Game settings you changed
+      description: Program, required or extra arguments, library overrides, Try anyway, graphics, controller preset or anything else. Export as recipe and attach the file if you can. Leave empty if none.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: |
+        What you did and what you saw, step by step. How far did the game get? Frame rate if you know it.
+        For a problem: what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs and screenshots
+      description: |
+        Drag the zip from `collect_logs.py` here. Logs are required when the game did not work.
+        The script hides your Steam account name, but look through the logs before you post them.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: kstuff and ShadowMountPlus were loaded when I tested.
+          required: true
+        - label: I own this game on Steam.
+          required: true

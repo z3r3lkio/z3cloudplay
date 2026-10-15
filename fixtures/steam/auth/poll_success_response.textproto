@@ -1,0 +1,6 @@
+refresh_token: "synthetic.refresh.token"
+access_token: "synthetic.access.token"
+had_remote_interaction: true
+account_name: "synthetic_account"
+new_guard_data: "synthetic-guard-data"
+agreement_session_url: "https://synthetic.invalid/agreement"

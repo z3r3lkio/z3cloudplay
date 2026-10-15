@@ -1,0 +1,620 @@
+{
+  "schema_version": 1,
+  "clock_mode": "manual",
+  "transfer_bytes_per_tick": 67108864,
+  "verification_ticks": 2,
+  "scenarios": [
+    {
+      "id": "default",
+      "expected": "Signed in; 24 games; one transfer at 43% and two queued."
+    },
+    {
+      "id": "first-run",
+      "expected": "No account; startup Connect/Skip."
+    },
+    {
+      "id": "persistence-corrupt",
+      "expected": "Startup warns; retry or continue without saving."
+    },
+    {
+      "id": "signed-out",
+      "expected": "No account-visible cache; Connect reachable."
+    },
+    {
+      "id": "qr-waiting",
+      "expected": "Simulated challenge waiting; expires at clock+30."
+    },
+    {
+      "id": "qr-expired",
+      "expected": "Expired; refresh creates new generation."
+    },
+    {
+      "id": "qr-failure",
+      "expected": "Network error; retry/cancel."
+    },
+    {
+      "id": "qr-denied",
+      "expected": "Denied; retry/cancel."
+    },
+    {
+      "id": "qr-approved",
+      "expected": "Approval of current generation enters sync."
+    },
+    {
+      "id": "late-approval",
+      "expected": "Cancel invalidates generation; late approval ignored."
+    },
+    {
+      "id": "syncing",
+      "expected": "Library loading; manual sync-complete recovers."
+    },
+    {
+      "id": "empty",
+      "expected": "Signed-in empty library; CTA focus."
+    },
+    {
+      "id": "offline",
+      "expected": "Cached games visible; persistent offline warning."
+    },
+    {
+      "id": "no-results",
+      "expected": "Query zzz-no-matches; Clear focus."
+    },
+    {
+      "id": "delayed-art",
+      "expected": "900007 delayed until art-ready; fixed geometry."
+    },
+    {
+      "id": "failed-art",
+      "expected": "900008 failed cover; title placeholder."
+    },
+    {
+      "id": "install-ready",
+      "expected": "900012 offer; external selected."
+    },
+    {
+      "id": "unknown-size",
+      "expected": "900006 offer; bytes remain unknown."
+    },
+    {
+      "id": "insufficient-space",
+      "expected": "Internal free limited to 1 GiB."
+    },
+    {
+      "id": "storage-disconnect",
+      "expected": "external disconnect before confirm or during transfer."
+    },
+    {
+      "id": "paused",
+      "expected": "job-1 paused at 43%."
+    },
+    {
+      "id": "download-failed",
+      "expected": "job-1 failed download at 43%; retry stage preserved."
+    },
+    {
+      "id": "verification-failed",
+      "expected": "job-1 failed verifying; retry verifying."
+    },
+    {
+      "id": "restart-recovery",
+      "expected": "job-1 interrupted at 43%; reconnect/resume."
+    },
+    {
+      "id": "save-failure",
+      "expected": "Writes fail; visible warning; session remains usable."
+    },
+    {
+      "id": "runtime-unavailable",
+      "expected": "Downloaded 900001; runtime unavailable."
+    },
+    {
+      "id": "launch-failure",
+      "expected": "900001 simulated launch fails; retry/back."
+    },
+    {
+      "id": "crash",
+      "expected": "Simulated 900001 session crashed; logs/back."
+    },
+    {
+      "id": "stop-failure",
+      "expected": "Quit running session fails; force-stop confirmation."
+    },
+    {
+      "id": "controller-disconnected",
+      "expected": "Disconnected warning; host keyboard recovery."
+    },
+    {
+      "id": "controller-reconnected",
+      "expected": "Input reset; same modal/focus retained."
+    },
+    {
+      "id": "reduced-motion",
+      "expected": "Reduced motion true; focus remains visible."
+    },
+    {
+      "id": "stress",
+      "expected": "Existing ../library.json 1000 records; bounded grid/cache."
+    }
+  ],
+  "captures": [
+    {
+      "id": "qr-waiting",
+      "scenario": "qr-waiting",
+      "surface": "qr",
+      "game_id": null,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "qr-error",
+      "scenario": "qr-failure",
+      "surface": "qr",
+      "game_id": null,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "home",
+      "scenario": "default",
+      "surface": "home",
+      "game_id": 900001,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "library-focused",
+      "scenario": "default",
+      "surface": "library",
+      "game_id": 900001,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "library-empty",
+      "scenario": "empty",
+      "surface": "library",
+      "game_id": null,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "library-no-results",
+      "scenario": "no-results",
+      "surface": "library",
+      "game_id": null,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "filters",
+      "scenario": "default",
+      "surface": "filters",
+      "game_id": 900001,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "keyboard",
+      "scenario": "default",
+      "surface": "keyboard",
+      "game_id": 900001,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "details-not-installed",
+      "scenario": "default",
+      "surface": "details",
+      "game_id": 900012,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "details-runtime-unavailable",
+      "scenario": "runtime-unavailable",
+      "surface": "details",
+      "game_id": 900001,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "context",
+      "scenario": "default",
+      "surface": "context",
+      "game_id": 900001,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "collection-editor",
+      "scenario": "default",
+      "surface": "collection-editor",
+      "game_id": 900001,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "install-error",
+      "scenario": "insufficient-space",
+      "surface": "install",
+      "game_id": 900012,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "storage-error",
+      "scenario": "storage-disconnect",
+      "surface": "storage",
+      "game_id": 900012,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "downloads-active",
+      "scenario": "default",
+      "surface": "downloads",
+      "game_id": 900009,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "downloads-failed",
+      "scenario": "download-failed",
+      "surface": "downloads",
+      "game_id": 900009,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "game-settings",
+      "scenario": "default",
+      "surface": "game-settings",
+      "game_id": 900001,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "setting-picker",
+      "scenario": "default",
+      "surface": "setting-picker",
+      "game_id": 900001,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "profile",
+      "scenario": "default",
+      "surface": "profile",
+      "game_id": 900001,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "settings",
+      "scenario": "default",
+      "surface": "settings",
+      "game_id": null,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "uninstall",
+      "scenario": "default",
+      "surface": "uninstall",
+      "game_id": 900001,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "logs",
+      "scenario": "default",
+      "surface": "logs",
+      "game_id": 900001,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "launch",
+      "scenario": "default",
+      "surface": "launch",
+      "game_id": 900001,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "session-controls",
+      "scenario": "default",
+      "surface": "session-controls",
+      "game_id": 900001,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "reduced-motion",
+      "scenario": "reduced-motion",
+      "surface": "library",
+      "game_id": 900001,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    },
+    {
+      "id": "multilingual",
+      "scenario": "default",
+      "surface": "library",
+      "game_id": 900007,
+      "clock": 1760000000,
+      "resolutions": [
+        [
+          1920,
+          1080
+        ],
+        [
+          3840,
+          2160
+        ]
+      ]
+    }
+  ],
+  "transitions": {
+    "job": [
+      "queued",
+      "downloading",
+      "verifying",
+      "downloaded"
+    ],
+    "branches": [
+      "pausing",
+      "paused",
+      "failed",
+      "cancelled",
+      "interrupted"
+    ],
+    "authentication": [
+      "waiting",
+      "expired",
+      "refreshing",
+      "network-failure",
+      "denied",
+      "approved",
+      "cancelled"
+    ]
+  },
+  "invariants": [
+    "One active transfer maximum.",
+    "Submission is idempotent by game and volume.",
+    "Cancellation invalidates challenge generation.",
+    "No account switch retains account-visible cache.",
+    "Downloaded never implies runtime-ready.",
+    "Reset preserves installs, saves and simulated history.",
+    "Sign-out clears session and account-visible cache.",
+    "No volume has a real writable path.",
+    "Clock freezes during captures.",
+    "Only candidate-isolated profiles are mutated."
+  ]
+}

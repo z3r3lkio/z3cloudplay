@@ -1,0 +1,23 @@
+[submodule "third_party/ps5-native-app-boilerplate"]
+	path = third_party/ps5-native-app-boilerplate
+	url = https://github.com/blackbearreloaded/ps5-native-app-boilerplate.git
+[submodule "third_party/ps5-homebrew-ui"]
+	path = third_party/ps5-homebrew-ui
+	url = https://github.com/leolobato/ps5-homebrew-ui.git
+	branch = feat/z3cloudplay-ps5
+[submodule "third_party/prospero-win"]
+	path = third_party/prospero-win
+	url = https://github.com/leolobato/prospero-win.git
+	branch = feat/z3cloudplay-ps5
+[submodule "third_party/ps5-opengl"]
+	path = third_party/ps5-opengl
+	url = https://github.com/leolobato/ps5-opengl.git
+	branch = feat/z3cloudplay-ps5
+[submodule "third_party/prospero-foundation"]
+	path = third_party/prospero-foundation
+	url = https://github.com/leolobato/prospero-foundation.git
+	branch = feat/z3cloudplay-ps5
+[submodule "third_party/PS5-Lapy-JB-Daemon"]
+	path = third_party/PS5-Lapy-JB-Daemon
+	url = https://github.com/leolobato/PS5-Lapy-JB-Daemon.git
+	branch = feat/z3cloudplay-ps5

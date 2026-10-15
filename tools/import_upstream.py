@@ -22,13 +22,13 @@ for p in dest.rglob("*"):
     if p.suffix.lower() not in suffixes and p.name not in {"CMakeLists.txt","CMakePresets.json",".gitmodules"}: continue
     try: contents=p.read_text(encoding="utf-8")
     except (UnicodeDecodeError,OSError): continue
-    modified=contents.replace("PLAYDEN","Z3CLOUDPLAY").replace("Playden","Z3CloudPlay").replace("playden","z3cloudplay")
+    modified=contents.replace("Z3CLOUDPLAY","Z3CLOUDPLAY").replace("Z3CloudPlay","Z3CloudPlay").replace("z3cloudplay","z3cloudplay")
     if modified != contents: p.write_text(modified,encoding="utf-8")
 readme=dest/"README.md"
 body=readme.read_text()
 body=body.replace("# Z3CloudPlay for PS5","# z3cloudplay for PS5")
-readme.write_text("""<!-- z3cloudplay is derived from leolobato/playden-ps5 (GPL-3.0).
-Original project: https://github.com/leolobato/playden-ps5
+readme.write_text("""<!-- z3cloudplay is derived from leolobato/z3cloudplay-ps5 (GPL-3.0).
+Original project: https://github.com/leolobato/z3cloudplay-ps5
 This is an independent, unofficial adaptation, not endorsed by Valve or the original author.
 IMPORTANT: session encryption remains pending; current imported session data is NOT encrypted.
 -->

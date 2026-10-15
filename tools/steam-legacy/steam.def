@@ -1,0 +1,8 @@
+LIBRARY steam.dll
+EXPORTS
+  SteamStartup
+  SteamCleanup
+  SteamIsAppSubscribed
+  SteamIsSubscribed
+  SteamIsLoggedIn
+  SteamGetLocalClientVersion

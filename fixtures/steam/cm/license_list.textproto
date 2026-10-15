@@ -1,0 +1,6 @@
+eresult: 1
+licenses { package_id: 100 time_created: 1600000000 flags: 0 owner_id: 4242 access_token: 7001 }
+licenses { package_id: 200 time_created: 1500000000 flags: 0 owner_id: 0 }
+licenses { package_id: 300 time_created: 1400000000 flags: 8 owner_id: 4242 }
+licenses { package_id: 400 time_created: 1300000000 flags: 0 owner_id: 9999 }
+licenses { package_id: 500 time_created: 1200000000 minute_limit: 60 minutes_used: 60 owner_id: 4242 }

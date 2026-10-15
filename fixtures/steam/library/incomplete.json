@@ -1,0 +1,11 @@
+{
+  "response": {
+    "game_count": 2,
+    "games": [
+      {
+        "appid": 1001,
+        "name": "Synthetic One"
+      }
+    ]
+  }
+}

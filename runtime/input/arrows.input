@@ -1,0 +1,17 @@
+; A keyboard game moved with the arrow keys: the d-pad sends the arrows,
+; Cross Z (confirm), Circle X (cancel), Triangle C (menu) and Options Enter.
+; Fits Undertale, GameMaker and RPG Maker games and most older keyboard-only
+; titles. No stick moves the pointer, and Escape is left off because some
+; games quit when it is held.
+[input]
+mode = keyboard
+mouse = none
+up = up
+down = down
+left = left
+right = right
+cross = z
+circle = x
+triangle = c
+square = shift
+options = enter

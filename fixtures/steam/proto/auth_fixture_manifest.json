@@ -1,0 +1,42 @@
+{
+  "data_policy": "All tokens, account names, IDs, request bytes, URLs and guard data are deterministic synthetic values. No real account data is included.",
+  "fixture_sources_sha256": {
+    "begin_request.textproto": "414cdea68cb63005007898d7fefa95246b692306289d05471d09a2b44ad486bf",
+    "begin_response.textproto": "31948bad47524918476c8843287d34da610b31b149095eaa5c705520c77f8149",
+    "poll_pending_response.textproto": "cb44c94e45eb9c3ee3d11e172f4415ce21503f581c9633afbcf76fc383e08519",
+    "poll_request.textproto": "f99423e283804b642de603749198574628f4a7298e44b4364d03642843c43229",
+    "poll_success_response.textproto": "8be7453fbff79cf6223cfa4c931db9eb91576b6452b553085bdd516d1874219f",
+    "renew_request.textproto": "aa0835edf2155942d43b03c0d549e31c9cdabd59a3000aeb6848cc58d4647018",
+    "renew_response.textproto": "c6733d98720e99c9e17616a4e4bad95aab05e2f3b8ed13525a9cab406bb2dfe5"
+  },
+  "fixtures_sha256": {
+    "begin_request.pb": "060040dfdbfdd78849fa30502f19f6974d2c8a2f57359bd1ff39be31ca9158ca",
+    "begin_response.pb": "3b8d874101cf1a4f2e3e7c28adb45d495514a77879bd7da1a1ff5decfe842a8a",
+    "poll_pending_response.pb": "27aebe920b830a0609b184aed1dea59b47cc4e22ce07da953652d21f1fabe02b",
+    "poll_request.pb": "66b5ae5274786d5413c3a0492d75de46d3620c452a0aa78cc1f87395baf088e1",
+    "poll_success_response.pb": "7472683a6416b4dac003f5cee9f00b420d875c8f1dbf1564ec9592d7c277c14a",
+    "renew_request.pb": "dc63ffcf591215304a05faf3a436bad4f0f08f197aa6002bf4c4b915ffd461ed",
+    "renew_response.pb": "86af42fb4bcd0ed6fbcaf737b321e9adf82eedabbd76c291edb256f3de61af87"
+  },
+  "generator": {
+    "command": "In an isolated checkout of the reference revision, add an executable target AuthFixtureGenerator depending on SteamProto and SwiftProtobuf, copy generate_auth_fixtures.swift to Sources/AuthFixtureGenerator/main.swift, then run: swift run --disable-sandbox AuthFixtureGenerator <launcher>/fixtures/steam/auth",
+    "source": "generate_auth_fixtures.swift",
+    "source_sha256": "959d653fdb9fc16aa822a6e35e1fdd22e71aa4610465ddeb3d8093042efd0999"
+  },
+  "proto_inputs_sha256": {
+    "enums.proto": "01e76be8e4892600af11c8c2b0b0b08c08af3f63a287aff94733216bff668482",
+    "steammessages_auth.steamclient.proto": "6a52feb13bb2e5eeae5fe34fa958705384b4d4a59903897e7b68ea8c201ecef1",
+    "steammessages_base.proto": "a3330e42ea841aa66a0fc6a8008325ac515dedb439ebe06c1f27f5d3ecf79adb",
+    "steammessages_unified_base.steamclient.proto": "b1e07001d591f1df08a8e1f486ef4e08cd3addb429b000756f032b58e0119a3a"
+  },
+  "reference": {
+    "repository": "../playden",
+    "revision": "de952b3d49167e635945ada88cd8533e07d40d44",
+    "swift_protobuf_revision": "55d7a1cc5666b85c13464aea1c4b4a90feccb4c8",
+    "swift_protobuf_version": "1.38.1"
+  },
+  "verification": {
+    "consumer": "c++ -std=c++17 -Isrc tests/auth_messages_test.cpp src/steam/backend/proto_wire.cpp src/steam/backend/auth_messages.cpp -o auth_messages_test && ./auth_messages_test fixtures/steam/auth",
+    "reference": "The generator decodes and asserts the emitted response fixtures with SwiftProtobuf 1.38.1."
+  }
+}
