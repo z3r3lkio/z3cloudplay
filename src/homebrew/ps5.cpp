@@ -37,6 +37,7 @@
 #include "platform/ps5/system.hpp"
 
 #include <array>
+#include <algorithm>
 #include <atomic>
 #include <cstdio>
 #include <cstdlib>
@@ -251,6 +252,11 @@ int main() {
         });
         // Legacy plaintext tokens must not survive into this session.
         z3cloudplay::Storage credential_cleanup(paths.steam_state_root);
+        if (!credential_cleanup.EnsureRootDirectory().ok()) {
+            z3cloudplay::app::AppendLogLine(log_root, "storage.log",
+                "private credential directory unavailable; authentication disabled");
+            return 1;
+        }
         const auto clean_primary = credential_cleanup.Remove("session.v1");
         const auto clean_temporary = credential_cleanup.Remove("session.v1.tmp");
         if (!clean_primary.ok() || !clean_temporary.ok()) {
@@ -559,6 +565,12 @@ int main() {
         }
 #if !Z3CLOUDPLAY_UI_SIMULATION
         services.Shutdown();
+        {
+            std::lock_guard<std::mutex> lock(vault_mutex);
+            volatile char* secret = vault_passphrase.empty() ? nullptr : &vault_passphrase[0];
+            for (std::size_t i = 0; i < vault_passphrase.size(); ++i) secret[i] = 0;
+            vault_passphrase.clear();
+        }
         artwork.Shutdown();
 #endif
     }
