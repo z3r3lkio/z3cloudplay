@@ -2838,12 +2838,19 @@ class Render::Impl
                  476.0F, 188.0F, 46.0F, kText);
         ui::Painter painter(overlay_, fonts_, theme_, renderer_.glass_texture());
         const gfx::Rect field{476.0F, 232.0F, 968.0F, 76.0F};
-        painter.field(field, state.editor.value, false,
+        const bool secret_entry = state.editor.purpose == "Secure Session Passphrase";
+        // Render only a fixed mask; never put secret text into the GPU draw list.
+        const std::string display_value = secret_entry
+            ? std::string(std::min<std::size_t>(state.editor.value.size(), 64), '*')
+            : state.editor.value;
+        painter.field(field, display_value, false,
                       {0.0F, 0.0F, false});
         const std::size_t caret = std::min(state.editor.caret, state.editor.value.size());
+        const std::string caret_text = secret_entry
+            ? std::string(std::min<std::size_t>(caret, 64), '*')
+            : state.editor.value.substr(0, caret);
         const float caret_x = field.x + 22.0F +
-                              fonts_.regular.measure(std::string_view(state.editor.value).substr(0, caret),
-                                                     24.0F);
+                              fonts_.regular.measure(caret_text, 24.0F);
         overlay_.rounded_rect({std::min(caret_x, field.x + field.w - 24.0F), field.y + 18.0F,
                                2.0F, field.h - 36.0F},
                               1.0F, kAccent);
