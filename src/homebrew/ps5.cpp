@@ -247,6 +247,15 @@ int main() {
             z3cloudplay::app::AppendLogLine(log_root, "auth.log", std::string("restored path=") + path + " before " + before +
                 " after " + after);
         });
+        // Legacy plaintext tokens must not survive into this session.
+        z3cloudplay::Storage credential_cleanup(paths.steam_state_root);
+        const auto clean_primary = credential_cleanup.Remove("session.v1");
+        const auto clean_temporary = credential_cleanup.Remove("session.v1.tmp");
+        if (!clean_primary.ok() || !clean_temporary.ok()) {
+            z3cloudplay::app::AppendLogLine(log_root, "storage.log",
+                "legacy plaintext credential cleanup failed; authentication disabled");
+            return 1;
+        }
         z3cloudplay::security::EphemeralSessionRepository sessions;
         z3cloudplay::steam::LibraryClient owned_library(paths.trust_store);
         auto& library_sessions = sessions;
