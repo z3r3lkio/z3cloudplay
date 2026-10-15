@@ -17,6 +17,20 @@ repository passed on Linux (GitHub Actions run 38723730148).
 
 The KDF uses PBKDF2 as a compatibility implementation, **not Argon2id**. This is a staged change, not a security release.
 
+## Encrypted persistence candidate
+
+Branch `feature/persistent-encrypted-sessions` connects `SecureSessionRepository`
+to the PS5 entry point, adds an obscured passphrase editor, checks the
+passphrase against any existing vault before allowing new authentication,
+and retries session restoration after unlocking. The branch has passed
+isolated Linux crypto/repository tests and static security guards.
+
+**This is not a PS5-validated release.** The integration needs a native
+PS5 build, UI/keyboard testing, and independent security review before
+merging into `main`. The `main` branch continues using memory-only
+sessions. Do not assume the protected UI prevents process-memory capture
+or that deleting legacy files securely erases flash remnants.
+
 ## Required changes before a security release
 
 1. Introduce a versioned authenticated-encryption container (AES-256-GCM) with a random nonce, authenticated metadata and full verification before parsing.

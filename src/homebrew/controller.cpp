@@ -7,16 +7,16 @@ namespace z3cloudplay::homebrew {
 Controller::Controller(Simulation& model, steam::AuthBackend& backend, SessionRepository& repository,
                        LibraryService* library_service, app::PersistenceService* persistence_service,
                        steam::AppDetailsService* app_details, steam::InstallService* installs,
-                       steam::CloudService* cloud, RuntimeHost* runtime)
+                       steam::CloudService* cloud, RuntimeHost* runtime, bool defer_initial_restore)
     : model_(model), app_details_(app_details), installs_(installs), cloud_(cloud), runtime_(runtime),
       library_service_(library_service) {
   if (model_.state().simulation_mode) return;
   if(library_service_) library_=std::make_unique<app::LibraryController>(model_,*library_service_);
   service_ = std::make_unique<steam::SteamService>(backend,repository);
-  phase_ = Phase::Restore;
-  Update(AuthState::Restoring,{},true);
+  phase_ = defer_initial_restore ? Phase::Idle : Phase::Restore;
+  Update(defer_initial_restore ? AuthState::SignedOut : AuthState::Restoring,{},true);
   if(persistence_service) persistence_=std::make_unique<app::PersistenceController>(model_,*persistence_service);
-  request_ = service_->RestoreSession();
+  if (!defer_initial_restore) request_ = service_->RestoreSession();
   if (cloud_)
     // On the Cloud worker, just before a job checks a game: never while its title may run.
     cloud_->SetGate([this](GameId id) {
@@ -79,6 +79,11 @@ void Controller::Reauthenticate() {
   phase_ = Phase::SignIn;
   request_ = service_->BeginQrSignIn();
   Update(AuthState::Waiting);
+}
+void Controller::RestoreAfterUnlock() {
+  if (!service_) return;
+  // Existing SteamService worker serializes replacement/cancel requests.
+  Restore();
 }
 void Controller::Restore() {
   if(library_) library_->Reset();

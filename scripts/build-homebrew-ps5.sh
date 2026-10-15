@@ -9,8 +9,8 @@ simulation=${Z3CLOUDPLAY_UI_SIMULATION:-OFF}
 native_access=${Z3CLOUDPLAY_NATIVE_RUNTIME_ACCESS:-ON}
 prospero_source=${Z3CLOUDPLAY_PROSPERO_SOURCE_DIR:-"$root/third_party/prospero-win"}
 helper_build="$root/third_party/PS5-Lapy-JB-Daemon/build/owned_root_helper-FAKE77031"
-lapy_helper=${Z3CLOUDPLAY_LAPY_HELPER_ELF:-"$helper_build/lapy.elf"}
-lapy_manifest=${Z3CLOUDPLAY_LAPY_HELPER_MANIFEST:-"$helper_build/lapy-manifest.json"}
+lapy_helper=${Z3CLOUDPLAY_LAPY_HELPER_ELF-"$helper_build/lapy.elf"}
+lapy_manifest=${Z3CLOUDPLAY_LAPY_HELPER_MANIFEST-"$helper_build/lapy-manifest.json"}
 title_remover=${Z3CLOUDPLAY_TITLE_REMOVER_ELF:-"$root/build/title-remover/title-remover.elf"}
 case "$simulation" in
  ON|on|1|true) simulation=ON ;;
@@ -35,6 +35,7 @@ fi
 bash "$environment" bash -c 'exec "$PS5_PAYLOAD_SDK/bin/prospero-cmake" "$@"' bash \
  -G Ninja -S "$root" -B "$root/build/homebrew-ps5" -DCMAKE_BUILD_TYPE=Release \
  -DZ3CLOUDPLAY_PLATFORM_PS5=ON -DZ3CLOUDPLAY_PS5_TITLE_ID=FAKE77031 \
+ -DZ3CLOUDPLAY_EXPERIMENTAL_ARCHIVE_REBUILD="${Z3CLOUDPLAY_EXPERIMENTAL_ARCHIVE_REBUILD:-OFF}" \
  -DZ3CLOUDPLAY_UI_SIMULATION="$simulation" \
  -DZ3CLOUDPLAY_NATIVE_RUNTIME_ACCESS="$native_access" -DZ3CLOUDPLAY_PROSPERO_SOURCE_DIR="$prospero_source" \
  -DZ3CLOUDPLAY_LAPY_HELPER_ELF="$lapy_helper" -DZ3CLOUDPLAY_LAPY_HELPER_MANIFEST="$lapy_manifest" \

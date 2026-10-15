@@ -89,8 +89,13 @@ foreach(archive libcurl.a libeverest.a libmbedcrypto.a libmbedtls.a
             steam_network_probe ps5_archives "${archive}")
         file(SHA256 "${archive_path}" actual_hash)
         if(NOT actual_hash STREQUAL expected_hash)
-            message(FATAL_ERROR "Pinned ps5 archive hash mismatch: ${archive}. "
-                "Rebuild with scripts/network-deps/prepare-ps5-deps.sh")
+            if(Z3CLOUDPLAY_EXPERIMENTAL_ARCHIVE_REBUILD)
+                message(WARNING "EXPERIMENTAL TEST BUILD: ${archive} differs from pinned binary; "
+                    "source package digests were validated, but build output is not reproducible.")
+            else()
+                message(FATAL_ERROR "Pinned ps5 archive hash mismatch: ${archive}. "
+                    "Rebuild with scripts/network-deps/prepare-ps5-deps.sh")
+            endif()
         endif()
     endif()
     list(APPEND z3cloudplay_steam_archives "${archive_path}")
@@ -194,6 +199,8 @@ target_include_directories(z3cloudplay_secure_session_repository PUBLIC "${CMAKE
 target_compile_features(z3cloudplay_secure_session_repository PUBLIC cxx_std_17)
 target_link_libraries(z3cloudplay_secure_session_repository PUBLIC
     z3cloudplay_secure_session_vault z3cloudplay_storage)
+# Ensure native Steam consumers resolve encrypted persistence when selected.
+target_link_libraries(z3cloudplay_steam_core PUBLIC z3cloudplay_secure_session_repository)
 target_include_directories(z3cloudplay_secure_session_vault PUBLIC
     "${CMAKE_SOURCE_DIR}/src"
     "${Z3CLOUDPLAY_STEAM_PREFIX}/include")

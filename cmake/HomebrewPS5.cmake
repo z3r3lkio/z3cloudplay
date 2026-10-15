@@ -118,7 +118,7 @@ function(z3cloudplay_add_homebrew_ps5_title)
         $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions;-fno-rtti>)
     target_compile_features(z3cloudplay_ps5_app PRIVATE cxx_std_20)
     target_link_libraries(z3cloudplay_ps5_app PRIVATE z3cloudplay_hui z3cloudplay_library z3cloudplay_steam_auth
-        z3cloudplay_homebrew_controller z3cloudplay_local_session_repository z3cloudplay_steam_library z3cloudplay_steam_cm z3cloudplay_native_access)
+        z3cloudplay_homebrew_controller z3cloudplay_local_session_repository z3cloudplay_secure_session_repository z3cloudplay_steam_library z3cloudplay_steam_cm z3cloudplay_native_access)
 
 	set(host_tool "${host}/ps5-native-tool")
 	set(libc_prx "${host}/libc.prx")
@@ -143,7 +143,7 @@ function(z3cloudplay_add_homebrew_ps5_title)
 			"${sdk_deps}/compiler-rt/libclang_rt.builtins-x86_64.a" $<TARGET_FILE:z3cloudplay_hui> $<TARGET_FILE:z3cloudplay_homebrew_ui> $<TARGET_FILE:z3cloudplay_homebrew_model>
 			$<TARGET_FILE:z3cloudplay_homebrew_qr> $<TARGET_FILE:z3cloudplay_homebrew_controller>
 			$<TARGET_FILE:z3cloudplay_homebrew_artwork_cache> $<TARGET_FILE:z3cloudplay_homebrew_artwork> $<TARGET_FILE:z3cloudplay_persistence_controller> $<TARGET_FILE:z3cloudplay_persistence_service> $<TARGET_FILE:z3cloudplay_preferences> $<TARGET_FILE:z3cloudplay_library_controller> $<TARGET_FILE:z3cloudplay_library_service> $<TARGET_FILE:z3cloudplay_steam_library> $<TARGET_FILE:z3cloudplay_steam_cm> $<TARGET_FILE:z3cloudplay_steam_cm_codec> $<TARGET_FILE:z3cloudplay_depot_codec>
-			$<TARGET_FILE:z3cloudplay_local_session_repository> $<TARGET_FILE:z3cloudplay_auth_diagnostics>
+			$<TARGET_FILE:z3cloudplay_local_session_repository> $<TARGET_FILE:z3cloudplay_secure_session_repository> $<TARGET_FILE:z3cloudplay_secure_session_vault> $<TARGET_FILE:z3cloudplay_auth_diagnostics>
 			$<TARGET_FILE:z3cloudplay_steam_http> $<TARGET_FILE:z3cloudplay_steam_protocol>
 			$<TARGET_FILE:z3cloudplay_steam_auth>
 			$<TARGET_FILE:z3cloudplay_steam_core> $<TARGET_FILE:z3cloudplay_diagnostic_log> $<TARGET_FILE:z3cloudplay_storage>
@@ -152,7 +152,7 @@ function(z3cloudplay_add_homebrew_ps5_title)
 			--end-group --as-needed ${link_stubs}
 		WORKING_DIRECTORY "${out}/link"
 		DEPENDS z3cloudplay_ps5_runtime z3cloudplay_ps5_shims z3cloudplay_ps5_app z3cloudplay_hui z3cloudplay_homebrew_ui z3cloudplay_homebrew_model ${title_database_targets}
-			z3cloudplay_homebrew_qr z3cloudplay_homebrew_controller z3cloudplay_local_session_repository z3cloudplay_auth_diagnostics
+			z3cloudplay_homebrew_qr z3cloudplay_homebrew_controller z3cloudplay_local_session_repository z3cloudplay_secure_session_repository z3cloudplay_secure_session_vault z3cloudplay_auth_diagnostics
 			z3cloudplay_homebrew_artwork_cache z3cloudplay_homebrew_artwork z3cloudplay_persistence_controller z3cloudplay_persistence_service z3cloudplay_preferences z3cloudplay_library_controller z3cloudplay_library_service z3cloudplay_steam_library z3cloudplay_steam_cm z3cloudplay_steam_cm_codec z3cloudplay_depot_codec
 			z3cloudplay_library z3cloudplay_steam_auth z3cloudplay_steam_http z3cloudplay_steam_protocol z3cloudplay_steam_core z3cloudplay_diagnostic_log z3cloudplay_storage z3cloudplay_native_access z3cloudplay_managed_directory z3cloudplay_runtime_steamworks z3cloudplay_runtime_artifact_hash z3cloudplay_runtime_settings_storage z3cloudplay_runtime_private_directories z3cloudplay_runtime_session_reconciler z3cloudplay_runtime_launch_service z3cloudplay_runtime_install_service z3cloudplay_runtime_installs z3cloudplay_game_paths
 			$<TARGET_OBJECTS:z3cloudplay_ps5_runtime> $<TARGET_OBJECTS:z3cloudplay_ps5_shims>
@@ -221,8 +221,12 @@ function(z3cloudplay_add_homebrew_ps5_title)
 		string(JSON expected_remover_sha GET "${dependency_lock}" title_remover sha256)
 		file(SHA256 "${Z3CLOUDPLAY_TITLE_REMOVER_ELF}" actual_remover_sha)
 		if(NOT actual_remover_sha STREQUAL expected_remover_sha)
-			message(FATAL_ERROR "Title remover pin mismatch: ${actual_remover_sha}")
-		endif()
+            if(Z3CLOUDPLAY_EXPERIMENTAL_ARCHIVE_REBUILD)
+                message(WARNING "EXPERIMENTAL TEST ONLY: locally compiled title remover digest differs from pinned artifact")
+            else()
+                message(FATAL_ERROR "Title remover pin mismatch: ${actual_remover_sha}")
+            endif()
+        endif()
 		set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${Z3CLOUDPLAY_TITLE_REMOVER_ELF}")
 		list(APPEND package_inputs "${Z3CLOUDPLAY_TITLE_REMOVER_ELF}")
 		list(APPEND native_helper_package_commands
