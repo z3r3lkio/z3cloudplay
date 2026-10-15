@@ -501,7 +501,7 @@ int main() {
                 {
                     std::lock_guard<std::mutex> lock(vault_mutex);
                     // Replace any previous failed attempt without persisting it.
-                    std::fill(vault_passphrase.begin(), vault_passphrase.end(), '\\0');
+                    std::fill(vault_passphrase.begin(), vault_passphrase.end(), '\0');
                     vault_passphrase = std::move(*candidate);
                 }
                 // An existing encrypted file must authenticate before allowing
@@ -512,7 +512,7 @@ int main() {
                 } else {
                     {
                         std::lock_guard<std::mutex> lock(vault_mutex);
-                        std::fill(vault_passphrase.begin(), vault_passphrase.end(), '\\0');
+                        std::fill(vault_passphrase.begin(), vault_passphrase.end(), '\0');
                         vault_passphrase.clear();
                     }
                     simulation.BeginSecurePassphraseEntry();
