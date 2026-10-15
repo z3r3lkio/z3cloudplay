@@ -13,7 +13,7 @@ permissions:
   contents: read
 jobs:
   ps5-test:
-    runs-on: ubuntu-24.04
+    runs-on: macos-15
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
@@ -25,10 +25,8 @@ jobs:
           test -f third_party/ps5-homebrew-ui/tools/font-baker/bake_font.cpp
       - name: Install native build prerequisites
         run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake ninja-build clang-18 llvm-18-dev libclang-18-dev \
-            build-essential python3 python3-pil python3-venv pkg-config \
-            curl unzip zstd libssl-dev libzstd-dev libsdl2-dev autoconf automake libtool
+          brew install cmake ninja llvm@18 pkgconf sdl2-compat python@3.12 autoconf automake libtool
+          echo "$(brew --prefix llvm@18)/bin" >> "$GITHUB_PATH"
       - name: Fetch verified PS5 SDK and dependencies
         run: bash scripts/fetch-deps.sh
       - name: Build launcher-only test payload
@@ -37,7 +35,7 @@ jobs:
           Z3CLOUDPLAY_LAPY_HELPER_ELF: ""
           Z3CLOUDPLAY_LAPY_HELPER_MANIFEST: ""
           Z3CLOUDPLAY_UI_SIMULATION: "OFF"
-          LLVM_CONFIG: /usr/bin/llvm-config-18
+          LLVM_CONFIG: /opt/homebrew/opt/llvm@18/bin/llvm-config
         run: bash scripts/build-homebrew-ps5.sh
       - name: Verify signed executable exists
         run: |
