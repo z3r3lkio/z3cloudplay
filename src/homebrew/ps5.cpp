@@ -29,6 +29,8 @@
 #include "steam/backend/library_client.h"
 #include "steam/local_session_repository.h"
 #include "steam/ephemeral_session_repository.h"
+#include "steam/secure_session_repository.h"
+#include <mutex>
 #include "library/cache.h"
 #include "platform/ps5/display_egl.hpp"
 #include "platform/ps5/pad.hpp"
@@ -256,7 +258,14 @@ int main() {
                 "legacy plaintext credential cleanup failed; authentication disabled");
             return 1;
         }
-        z3cloudplay::security::EphemeralSessionRepository sessions;
+        // Session vault key remains in process memory only, guarded across workers.
+        std::mutex vault_mutex;
+        std::string vault_passphrase;
+        z3cloudplay::security::SecureSessionRepository sessions(
+            credential_cleanup, [&]() {
+                std::lock_guard<std::mutex> lock(vault_mutex);
+                return vault_passphrase;
+            });
         z3cloudplay::steam::LibraryClient owned_library(paths.trust_store);
         auto& library_sessions = sessions;
         z3cloudplay::Storage library_storage(paths.steam_state_root);
@@ -429,6 +438,7 @@ int main() {
                                                runtime_host.get());
         z3cloudplay::steam::StoreDetailsService store_details(z3cloudplay::homebrew::StoreFetch(paths.trust_store));
         services.SetStoreDetails(&store_details);
+        simulation.BeginSecurePassphraseEntry();
         // Without its runtime Z3CloudPlay still lists and downloads games; say why nothing can start.
         if (!native_access.runtime_ready) simulation.UpdateRuntimeProblem(native_access.error);
 #endif
@@ -480,6 +490,29 @@ int main() {
                 else simulation.action(command.action);
             }
             simulation.controller_sample(z3cloudplay::homebrew::diagnostic_sample(input));
+#if !Z3CLOUDPLAY_UI_SIMULATION
+            if (auto candidate = simulation.TakeSecurePassphrase()) {
+                {
+                    std::lock_guard<std::mutex> lock(vault_mutex);
+                    // Replace any previous failed attempt without persisting it.
+                    std::fill(vault_passphrase.begin(), vault_passphrase.end(), '\\0');
+                    vault_passphrase = std::move(*candidate);
+                }
+                // An existing encrypted file must authenticate before allowing
+                // a new sign-in to overwrite it with a different passphrase.
+                const auto verified = sessions.Load();
+                if (verified.ok()) {
+                    services.RestoreAfterUnlock();
+                } else {
+                    {
+                        std::lock_guard<std::mutex> lock(vault_mutex);
+                        std::fill(vault_passphrase.begin(), vault_passphrase.end(), '\\0');
+                        vault_passphrase.clear();
+                    }
+                    simulation.BeginSecurePassphraseEntry();
+                }
+            }
+#endif
             const auto dispatched = hui::sys::monotonic_us();
 #if !Z3CLOUDPLAY_UI_SIMULATION
             services.Tick();
