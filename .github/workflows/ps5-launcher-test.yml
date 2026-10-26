@@ -25,11 +25,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
-      - name: Validate pinned submodules
+          submodules: false
+      - name: Initialize required pinned submodules only
         run: |
-          git submodule status
+          git submodule sync --recursive
+          git submodule update --init --depth 1 -- \
+            third_party/ps5-homebrew-ui \
+            third_party/prospero-win \
+            third_party/ps5-opengl \
+            third_party/prospero-foundation \
+            third_party/PS5-Lapy-JB-Daemon
           test -f third_party/ps5-homebrew-ui/tools/font-baker/bake_font.cpp
+          git submodule status
       - name: Install native build prerequisites
         run: |
           brew install cmake ninja llvm@18 pkgconf sdl2-compat python@3.12 autoconf automake libtool
