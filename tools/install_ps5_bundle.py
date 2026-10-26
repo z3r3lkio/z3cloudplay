@@ -45,7 +45,7 @@ def main():
             manifest = json.loads(z.read(manifests[0]))
             if manifest.get("kit_id") != "hl2-fw1360-dev1":
                 raise ValueError("Unexpected upstream kit identity")
-            for item in z.infolist():
+            expected_files = {f["path"]: f for f in manifest.get("files", [])}\n            for item in z.infolist():
                 name = item.filename
                 if not name.startswith(prefix):
                     continue
