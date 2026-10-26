@@ -16,6 +16,8 @@ on:
       - '.github/workflows/ps5-launcher-test.yml'
       - 'tools/install_ps5_bundle.py'
       - 'tools/console_kit_upload.py'
+      - 'scripts/fetch-deps.sh'
+      - 'dependencies.lock.json'
 permissions:
   contents: read
 jobs:
@@ -38,6 +40,19 @@ jobs:
             third_party/PS5-Lapy-JB-Daemon
           test -f third_party/ps5-homebrew-ui/tools/font-baker/bake_font.cpp
           git submodule status
+      - name: Preflight pinned dependency URLs
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          lock=json.load(open('dependencies.lock.json'))
+          urls=[lock['ps5_payload_sdk']['url'],lock['prospero_launcher_helper']['payload_sdk']['url'],lock['ps5_opengl']['sdk_url'],lock['compiler_rt_builtins']['url']]
+          failures=[]
+          for url in urls:
+              result=subprocess.run(['curl','-fsSL','--retry','1','--range','0-0','-o','/dev/null','-w','%{http_code}',url],capture_output=True,text=True)
+              print(f'{result.stdout.strip()} {url}')
+              if result.returncode: failures.append(url)
+          if failures: raise SystemExit('Pinned dependency URLs unavailable: '+', '.join(failures))
+          PY
       - name: Install native build prerequisites
         run: |
           brew install cmake ninja llvm@18 pkgconf sdl2-compat python@3.12 autoconf automake libtool
