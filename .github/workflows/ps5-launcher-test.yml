@@ -30,6 +30,7 @@ jobs:
         run: |
           git submodule sync --recursive
           git submodule update --init --depth 1 -- \
+            third_party/ps5-native-app-boilerplate \
             third_party/ps5-homebrew-ui \
             third_party/prospero-win \
             third_party/ps5-opengl \
