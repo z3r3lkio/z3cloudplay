@@ -14,6 +14,7 @@ on:
       - 'src/steam/backend/depot_installer.h'
       - 'scripts/build-homebrew-ps5.sh'
       - '.github/workflows/ps5-launcher-test.yml'
+      - 'tools/install_ps5_bundle.py'
 permissions:
   contents: read
 jobs:
@@ -66,5 +67,45 @@ jobs:
         with:
           name: z3cloudplay-ps5-runtime-test
           path: z3cloudplay-ps5-runtime-test.zip
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Fetch upstream runtime kit for combined distribution
+        run: |
+          curl --fail --location --retry 3 --output playden-kit-h-r8.zip \
+            https://github.com/leolobato/playden-ps5/releases/download/v0.2.0/playden-kit-h-r8.zip
+          python3 - <<'PY'
+          from zipfile import ZipFile
+          import json
+          with ZipFile("playden-kit-h-r8.zip") as kit:
+              entries=[n for n in kit.namelist() if n.endswith("/manifest.json") or n=="manifest.json"]
+              if len(entries)!=1:
+                  raise SystemExit(f"unexpected manifest count: {len(entries)}")
+              manifest=json.loads(kit.read(entries[0]))
+              assert manifest.get("kit_id")=="hl2-fw1360-dev1", manifest.get("kit_id")
+              print("Kit identity:",manifest["kit_id"],"declared firmware:",manifest.get("firmware"))
+          PY
+      - name: Package combined one-step FTP installer
+        run: |
+          mkdir -p z3cloudplay-complete
+          cp playden-kit-h-r8.zip z3cloudplay-complete/
+          cp tools/console_kit_upload.py tools/install_ps5_bundle.py z3cloudplay-complete/
+          cp -R build/homebrew-ps5/dist/FAKE77031 z3cloudplay-complete/
+          cat > z3cloudplay-complete/README.txt <<'EOF'
+          Z3CloudPlay combined experimental kit, PS5 11.00.
+          REQUIREMENTS: Python 3.10+ on a PC, PS5 FTP enabled, kstuff, ShadowMount+, ELF Loader.
+          Kit H r8 targets firmware 13.60. PS5 11.00 runtime compatibility is NOT verified.
+          Stop Z3CloudPlay, back up your application and runtime data.
+          Run from this folder:
+            python install_ps5_bundle.py --host PS5_IP
+          For kit-only installation (leave the current launcher untouched):
+            python install_ps5_bundle.py --host PS5_IP --kit-only
+          Type EXPERIMENTAL to confirm. A new application must first be registered by ShadowMount+.
+          EOF
+          zip -qr z3cloudplay-complete.zip z3cloudplay-complete
+      - uses: actions/upload-artifact@v4
+        with:
+          name: z3cloudplay-complete-ps5-experimental
+          path: z3cloudplay-complete.zip
           if-no-files-found: error
           retention-days: 7
