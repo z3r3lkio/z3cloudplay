@@ -25,12 +25,13 @@
     "source": "tools/title-remover/main.c; build with scripts/build-title-remover.sh (reproducible; sent by Z3CloudPlay to the payload loader on 127.0.0.1:9021)"
   },
   "ps5_opengl": {
-    "version": "1.0.0",
-    "source_revision": "e9c1104e83e9466637b7f79c350ee164bf772459",
-    "sdk_url": "https://github.com/blackbearreloaded/ps5-opengl/releases/download/v1.0.0/ps5-opengl-sdk-1.0.0.tar.gz",
-    "sdk_sha256": "f93643c04c843d56143b00951df1f8042ea7706ae9f19e4e9abf158e1ead77c5",
+    "version": "1.0.2",
+    "source_revision": "a519561626933257213d64a4a8bd5e02b55dceb2",
+    "sdk_url": "https://github.com/darkxex/ps5-opengl/releases/download/v1.0.2/ps5-opengl-sdk-1.0.2.tar.gz",
+    "sdk_sha256": "30d8e51dd062739b629346102be5932728ba714bc50b1bdcdf08306c8843d9a4",
     "libPS5OpenGL_sha256": "11ab03a347cf75e143c7aa896ff0fd94714ded471a92146aa0f2aba82722ae95",
-    "source": "third_party/ps5-opengl submodule, fork branch feat/z3cloudplay-ps5 (v1.0.0 dce7491 plus the legacy varying-linkage fix; native-app files unchanged)"
+    "source": "third_party/ps5-opengl submodule, fork branch main: the v1.0.2 tree (original tag a519561, kept as darkxex/ps5-opengl 6b6bb20 after the original repository was removed) with this fork's CI settings. sdk_manifest_sha256 pins sdk/manifest.sha256, which lists every SDK file; libPS5OpenGL.a is only a linker script naming the real libraries",
+    "sdk_manifest_sha256": "0d432edc9d648d6e0cccb4d5eb3db8484f10ba4b075b5ccf23edda3251b66360"
   },
   "ps5_native_app_boilerplate": {
     "revision": "f98de734b68b0b980d38ff03a330066afd6ae16d",

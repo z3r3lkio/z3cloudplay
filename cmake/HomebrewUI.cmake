@@ -268,8 +268,9 @@ target_link_libraries(z3cloudplay_homebrew_ui PUBLIC
     z3cloudplay_homebrew_model z3cloudplay_homebrew_qr z3cloudplay_hui z3cloudplay_homebrew_artwork_cache)
 
 if(Z3CLOUDPLAY_PLATFORM_PS5)
+    string(JSON z3cloudplay_gl_version GET "${z3cloudplay_dependency_lock}" ps5_opengl version)
     target_include_directories(z3cloudplay_hui PUBLIC
-        "${Z3CLOUDPLAY_PS5_DEPS_DIR}/ps5-opengl/ps5-opengl-sdk-1.0.0/sdk/include")
+        "${Z3CLOUDPLAY_PS5_DEPS_DIR}/ps5-opengl/ps5-opengl-sdk-${z3cloudplay_gl_version}/sdk/include")
     target_compile_definitions(z3cloudplay_hui PUBLIC GL_GLEXT_PROTOTYPES=1)
     target_compile_options(z3cloudplay_hui PUBLIC -fno-exceptions -fno-rtti)
     target_compile_options(z3cloudplay_homebrew_model PUBLIC -fno-exceptions -fno-rtti)

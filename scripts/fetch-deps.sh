@@ -19,7 +19,18 @@ fetch() {
     local url=$1 expected=$2 file="$downloads/$3"
     if [[ ! -f $file || $(sha256 "$file") != "$expected" ]]; then
         echo "Downloading $url"
-        curl -fsSL --retry 3 -o "$file.part" "$url"
+        if ! curl -fsSL --retry 3 -o "$file.part" "$url"; then
+            rm -f "$file.part"
+            echo "Dependency download failed: $url" >&2
+            echo "Supply the SHA-256 pinned archive at $file; unverified substitutes are rejected." >&2
+            exit 1
+        fi
+        local downloaded_hash; downloaded_hash=$(sha256 "$file.part")
+        if [[ "$downloaded_hash" != "$expected" ]]; then
+            rm -f "$file.part"
+            echo "Downloaded dependency SHA-256 mismatch: $url" >&2
+            exit 1
+        fi
         mv "$file.part" "$file"
     fi
     local actual; actual=$(sha256 "$file")
@@ -62,6 +73,9 @@ if ! fresh "$deps/ps5-opengl" "$gl_sha"; then
 fi
 library="$deps/ps5-opengl/ps5-opengl-sdk-$gl_version/sdk/lib/libPS5OpenGL.a"
 [[ $(sha256 "$library") == "$(lock ps5_opengl libPS5OpenGL_sha256)" ]] || { echo "libPS5OpenGL.a hash mismatch" >&2; exit 1; }
+gl_sdk="$deps/ps5-opengl/ps5-opengl-sdk-$gl_version/sdk"
+[[ $(sha256 "$gl_sdk/manifest.sha256") == "$(lock ps5_opengl sdk_manifest_sha256)" ]] || { echo "OpenGL manifest hash mismatch" >&2; exit 1; }
+(cd "$gl_sdk" && shasum -a 256 -c --quiet manifest.sha256) || { echo "OpenGL SDK file hashes mismatch" >&2; exit 1; }
 echo "Ready: $deps/ps5-opengl"
 
 rt_sha=$(lock compiler_rt_builtins archive_sha256)

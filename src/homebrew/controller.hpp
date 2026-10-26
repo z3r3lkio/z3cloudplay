@@ -25,12 +25,15 @@ class Controller {
   Controller(Simulation& model, steam::AuthBackend& backend, SessionRepository& repository,
              LibraryService* library_service = nullptr, app::PersistenceService* persistence_service = nullptr,
              steam::AppDetailsService* app_details = nullptr, steam::InstallService* installs = nullptr,
-             steam::CloudService* cloud = nullptr, RuntimeHost* runtime = nullptr);
+             steam::CloudService* cloud = nullptr, RuntimeHost* runtime = nullptr,
+             bool defer_initial_restore = false);
   ~Controller();
   void Tick();
   // Microseconds each part of the last Tick took, for slow-frame diagnostics.
   std::string LastTickProfile() const;
   void Shutdown();
+  // Reattempt restoration once the session vault has been unlocked.
+  void RestoreAfterUnlock();
   // Steam store descriptions, genres and controller support for the games the player opens.
   void SetStoreDetails(steam::StoreDetailsService* store_details) { store_details_ = store_details; }
   Controller(const Controller&) = delete;
