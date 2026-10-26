@@ -15,6 +15,7 @@ on:
       - 'scripts/build-homebrew-ps5.sh'
       - '.github/workflows/ps5-launcher-test.yml'
       - 'tools/install_ps5_bundle.py'
+      - 'tools/console_kit_upload.py'
 permissions:
   contents: read
 jobs:
@@ -102,7 +103,16 @@ jobs:
             python install_ps5_bundle.py --host PS5_IP --kit-only
           Type EXPERIMENTAL to confirm. A new application must first be registered by ShadowMount+.
           EOF
+          python3 -m py_compile tools/install_ps5_bundle.py tools/console_kit_upload.py
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('z3cloudplay-complete')
+          for name in ['playden-kit-h-r8.zip','install_ps5_bundle.py','console_kit_upload.py','FAKE77031/eboot.bin','README.txt']:
+              assert (p/name).is_file(), name
+          print('Combined bundle inputs verified')
+          PY
           zip -qr z3cloudplay-complete.zip z3cloudplay-complete
+          unzip -tq z3cloudplay-complete.zip
       - uses: actions/upload-artifact@v4
         with:
           name: z3cloudplay-complete-ps5-experimental
